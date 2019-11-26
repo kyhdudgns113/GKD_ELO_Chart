@@ -1,0 +1,3 @@
+1001    GRASS-drain_venu
+1002    GRASS-nasi_venu
+2001    FIRE-9tail

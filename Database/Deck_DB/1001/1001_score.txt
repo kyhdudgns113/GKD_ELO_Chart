@@ -1,0 +1,7 @@
+ID	1001
+NAME	GRASS-drain_venu
+ELO	1961.505623
+					  W6  W5  W4  W3  W2  W1   D  L1  L2  L3  L4  L5  L6
+	Total				   0   0   0   0   0   0   0   3   0   0   0   1   0
+1002	GRASS-nasi_venu                    0   0   0   0   0   0   0   0   0   0   0   1   0
+2001	FIRE-9tail                         0   0   0   0   0   0   0   3   0   0   0   0   0

@@ -1,0 +1,7 @@
+ID	2001
+NAME	FIRE-9tail
+ELO	2029.314880
+					  W6  W5  W4  W3  W2  W1   D  L1  L2  L3  L4  L5  L6
+	Total				   3   0   0   0   0   0   0   0   0   0   0   0   0
+1001	GRASS-drain_venu                   3   0   0   0   0   0   0   0   0   0   0   0   0
+1002	GRASS-nasi_venu                    0   0   0   0   0   0   0   0   0   0   0   0   0
