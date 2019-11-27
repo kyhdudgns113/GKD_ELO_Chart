@@ -21,25 +21,6 @@ NODE_DECK_ROW::NODE_DECK_ROW(int id, string name) {
 
 NODE_DECK_ROW::~NODE_DECK_ROW() {}
 
-//	이거 잘 안돌아가
-NODE_DECK_ROW& NODE_DECK_ROW::operator = (NODE_DECK_ROW& node) {
-
-	NODE_DECK_ROW ret(node.id, node.deck_name);
-
-	ret.elo = node.elo;
-	for (int i = 0; i < CNT_CARD; i++)
-		ret.form[i] = node.form[i];
-
-	ret.score_map = node.score_map;
-
-	ret.birth.year = node.birth.year;
-	ret.birth.month = node.birth.month;
-	ret.birth.day = node.birth.day;
-	ret.birth.hour = node.birth.hour;
-	ret.birth.min = node.birth.min;
-
-	return ret;
-}
 
 //
 //	win, draw, lose 정보를 받아온다.

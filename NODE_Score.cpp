@@ -72,7 +72,7 @@ double NODE_Score::rate_win_lose() {
 	if (wins + loses == 0)
 		return 0;
 	else
-		return (double)wins / (double)(wins + loses);
+		return (double)wins / (double)(wins + loses) * 100;
 }
 
 void NODE_Score::_debug_print_score() {

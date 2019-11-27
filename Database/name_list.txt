@@ -1,3 +1,6 @@
 1001    GRASS-drain_venu
 1002    GRASS-nasi_venu
 2001    FIRE-9tail
+2002    FIRE-windy
+3001    WATER-dewgong
+3002    WATER-eburn

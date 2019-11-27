@@ -10,6 +10,7 @@
 
 class GKD_ELO_Chart {
 	int tw[7], td, tl[7];
+	bool isFiled = false;
 public :
 	std::unordered_map<int, NODE_DECK_ROW> deck_row;
 	List_Name list_name;	//	Tail 에 넣어야 한다.
@@ -37,11 +38,18 @@ public :
 	std::tuple<int*, int, int*> get_total_score_id(int);
 	double return_win_rate(int);
 	double get_win_rate(int);
+	int return_tot_win(int);
+	int get_tot_win(int);
+	int return_tot_lose(int);
+	int get_tot_lose(int);
+	int return_tot_draw(int);
+	int get_tot_draw(int);
 
 	void mode_1_read_file();
 	void mode_2_write_file();
 	void mode_3_add_deck();
 	void mode_4_get_battle();
+	void mode_5_modify_name();
 	void mode_33_print_all_row_id();
 	void mode_34_print_all_row_elo();
 	void mode_41_print_id_all_col();
