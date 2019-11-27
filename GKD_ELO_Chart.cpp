@@ -1,7 +1,10 @@
 #include "GKD_ELO_Chart.h"
+
 #include <string>
+#include <algorithm>
 #include <io.h>
 #include <iostream>
+#include <vector>
 #include <direct.h>
 #include <time.h>
 
@@ -268,6 +271,7 @@ void GKD_ELO_Chart::write_entire_score() {
 }
 
 //	Database 폴더에서 생성된다.
+//
 void GKD_ELO_Chart::write_each_record(NODE_Record_Entire nd) {
 	
 	int id[2] = { nd.r_id[0], nd.r_id[1] };
@@ -854,7 +858,7 @@ double GKD_ELO_Chart::return_win_rate(int id) {
 	if (tw + tl == 0)
 		return 0;
 	else
-		return (double)tw / (double)(tw + tl);
+		return (double)tw / (double)(tw + tl)*100;
 }
 
 double GKD_ELO_Chart::get_win_rate(int id) {
@@ -973,6 +977,7 @@ void GKD_ELO_Chart::mode_3_add_deck() {
 //
 void GKD_ELO_Chart::mode_4_get_battle() {
 	//	1. a 와 b 를 입력받는다.
+	//		id, name 어떤걸로 입력해도 된다.
 	//		없으면 생성할지 여부를 물어본다.
 	//	2. 결과를 입력받는다.
 	//		결과 오타여부를 점검해야한다.
@@ -980,6 +985,7 @@ void GKD_ELO_Chart::mode_4_get_battle() {
 	std::string a, b, c, d;
 	int ret = 0;
 	int ibuf = 0;
+	int ia = 0, ib = 0;
 
 	//	1. a 와 b 를 입력받는 부분
 	//		각각 존재 여부와 생성여부를 확인한다.
@@ -993,17 +999,24 @@ void GKD_ELO_Chart::mode_4_get_battle() {
 	a = this->convert_name(a).second;
 	ret = this->list_name.isExist_name(a);
 	if (ret == false) {
-		printf("%s 는 차트에 없습니다.\n", a.c_str());
-		printf("새로 만들까요? (Y/N) : ");
-		std::cin >> c;
-		if (c[0] == 'y' || c[0] == 'Y') {
-			this->insert_new_deck(a);
+		ia = atoi(a.c_str());
+		if (this->list_name.isExist_id(ia) == false) {
+			printf("%s 는 차트에 없습니다.\n", a.c_str());
+			printf("새로 만들까요? (Y/N) : ");
+			std::cin >> c;
+			if (c[0] == 'y' || c[0] == 'Y') {
+				this->insert_new_deck(a);
+			}
+			else {
+				printf("만들지 않고 종료합니다.\n");
+				return;
+			}
 		}
 		else {
-			printf("만들지 않고 종료합니다.\n");
-			return;
-		}
+			a = this->list_name.find_name(ia);
+		}		
 	}
+
 	printf("b 를 입력하여 주십시오 : ");
 	std::cin >> b;
 	if (b == "-1") {
@@ -1013,15 +1026,21 @@ void GKD_ELO_Chart::mode_4_get_battle() {
 	b = this->convert_name(b).second;
 	ret = this->list_name.isExist_name(b);
 	if (ret == false) {
-		printf("%s 는 차트에 없습니다.\n", b.c_str());
-		printf("새로 만들까요? (Y/N) : ");
-		std::cin >> c;
-		if (c[0] == 'y' || c[0] == 'Y') {
-			this->insert_new_deck(b);
+		ib = atoi(b.c_str());
+		if (this->list_name.isExist_id(ib) == false) {
+			printf("%s 는 차트에 없습니다.\n", b.c_str());
+			printf("새로 만들까요? (Y/N) : ");
+			std::cin >> c;
+			if (c[0] == 'y' || c[0] == 'Y') {
+				this->insert_new_deck(b);
+			}
+			else {
+				printf("만들지 않고 종료합니다.\n");
+				return;
+			}
 		}
 		else {
-			printf("만들지 않고 종료합니다.\n");
-			return;
+			b = this->list_name.find_name(ib);
 		}
 	}
 
@@ -1076,13 +1095,66 @@ input_result:
 	}
 }
 
-
-void GKD_ELO_Chart::_debug_print_all_row() {
+//
+//	모든 row 를 id 순으로 정보를 출력한다.
+//	
+//
+void GKD_ELO_Chart::mode_33_print_all_row_id() {
 	ITERATOR_NAME it_name = this->list_name.name_list.begin();
 	int cnt = 0;
 	while (it_name != this->list_name.name_list.end()) {
 		int temp_id = it_name->first;
-		printf("%d 번째 %d : (%d, %s)=%.2lf\n", cnt++, temp_id, this->deck_row[temp_id].id, this->deck_row[temp_id].deck_name.c_str(), this->deck_row[temp_id].elo);
+		printf("(%d, %s) ", this->deck_row[temp_id].id, this->deck_row[temp_id].deck_name.c_str());
+		int tlen = this->deck_row[temp_id].deck_name.length();
+		for (int j = 0; j < 24 - tlen; j++)
+			printf(" ");
+		printf(" : %.2lf, %.2lf%%\n", this->deck_row[temp_id].elo, this->get_win_rate(temp_id));
 		it_name++;
 	}
+}
+
+//	모든 row 를 elo순으로 출력한다.
+//
+void GKD_ELO_Chart::mode_34_print_all_row_elo() {
+	
+	std::vector<NODE_PRINTED_ROW> vec;
+	NODE_PRINTED_ROW temp_row;
+
+
+	ITERATOR_NAME it_name = this->list_name.name_list.begin();
+
+	while (it_name != this->list_name.name_list.end()) {
+		int id = it_name->first;
+
+		temp_row.id = id;
+		strcpy(temp_row.name, it_name->second.c_str());
+		temp_row.elo = this->deck_row[id].elo;
+		temp_row.win_rate = this->get_win_rate(id);
+
+		vec.push_back(temp_row);
+
+		it_name++;
+	}
+
+	std::sort(vec.begin(), vec.end(), cmp_row_elo);
+
+	int len = vec.size();
+
+	for (int i = 0; i < len; i++) {
+		int tlen = strlen(vec[i].name);
+		printf("(%d, %s) ", vec[i].id, vec[i].name);
+		for (int j = 0; j < 24 - tlen; j++)
+			printf(" ");
+		printf(" : %.2lf, win_rate = %.2lf%%\n", vec[i].elo, vec[i].win_rate);
+	}
+}
+
+//
+//	한 id 의 모든 col 과의 score 를 출력한다.
+//	기대승률, 실제승률을 각각 출력한다.
+//
+void GKD_ELO_Chart::mode_41_print_id_all_col() {
+	printf("\nMODE_41 을 실행합니다.\n");
+	printf("아직 구현을 안했습니다.\n");
+	printf("get battle 에서 id 받아오는것부터 구현합니다.\n");
 }

@@ -47,3 +47,13 @@ typedef struct gkd_node_birth  {
 	int hour = 0;
 	int min = 0;
 }NODE_BIRTH;
+
+typedef struct gkd_node_printed_row {
+	char name[32];
+	int id;
+	double elo;
+	double win_rate;
+}NODE_PRINTED_ROW;
+
+
+bool cmp_row_elo(NODE_PRINTED_ROW a, NODE_PRINTED_ROW b);

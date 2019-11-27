@@ -20,7 +20,9 @@ int main() {
 		printf("2 or : 파일 쓰기\n");
 		printf("3 or : 차트에 원소추가\n");
 		printf("4 or : 결과 입력\n");
-		printf("33 or : row 확인\n");
+		printf("33 or : 모든 row 확인, id순\n");
+		printf("34 or : 모든 row 확인, elo순\n");
+		printf("41 or : 특정 row의 각 col 확인, id순\n");
 		printf("-1 : 저장 안하고 종료\n");
 
 		std::cin >> input_order;
@@ -38,7 +40,13 @@ int main() {
 			gkd_chart.mode_4_get_battle();
 		}
 		else if (input_order == "33") {
-			gkd_chart._debug_print_all_row();
+			gkd_chart.mode_33_print_all_row_id();
+		}
+		else if (input_order == "34") {
+			gkd_chart.mode_34_print_all_row_elo();
+		}
+		else if (input_order == "41") {
+			gkd_chart.mode_41_print_id_all_col();
 		}
 		else if (input_order == "-1") {
 			printf("Main while 취소 명령을 실행합니다. \n");

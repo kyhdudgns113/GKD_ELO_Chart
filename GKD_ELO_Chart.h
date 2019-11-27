@@ -1,5 +1,5 @@
 #pragma once
-#include "MotherHeader.h"
+
 #include <unordered_map>
 
 #include "List_Record_Entire.h"
@@ -42,6 +42,8 @@ public :
 	void mode_2_write_file();
 	void mode_3_add_deck();
 	void mode_4_get_battle();
+	void mode_33_print_all_row_id();
+	void mode_34_print_all_row_elo();
+	void mode_41_print_id_all_col();
 
-	void _debug_print_all_row();
 };
