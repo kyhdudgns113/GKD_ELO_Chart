@@ -1,10 +1,10 @@
 ID	3002
 NAME	WATER-eburn
-ELO	2000.888333
+ELO	2027.698366
 					  W6  W5  W4  W3  W2  W1   D  L1  L2  L3  L4  L5  L6
-	Total				   0   3   1   0   1   0   0   0   1   0   0   1   3
-1001	GRASS-drain_venu                   0   0   0   0   0   0   0   0   0   0   0   0   0
+	Total				   2   4   3   1   1   0   0   0   1   0   2   1   4
+1001	GRASS-drain_venu                   1   0   1   1   0   0   0   0   0   0   0   0   1
 1002	GRASS-nasi_venu                    0   0   0   0   0   0   0   0   0   0   0   0   0
 2001	FIRE-9tail                         0   1   0   0   1   0   0   0   0   0   0   1   2
-2002	FIRE-windy                         0   0   0   0   0   0   0   0   0   0   0   0   0
+2002	FIRE-windy                         1   1   1   0   0   0   0   0   0   0   2   0   0
 3001	WATER-dewgong                      0   2   1   0   0   0   0   0   1   0   0   0   1

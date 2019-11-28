@@ -1,10 +1,10 @@
 ID	2002
 NAME	FIRE-windy
-ELO	2063.176520
+ELO	2049.562550
 					  W6  W5  W4  W3  W2  W1   D  L1  L2  L3  L4  L5  L6
-	Total				   3   3   2   0   0   0   0   0   0   0   0   1   0
+	Total				   3   3   4   0   0   0   0   0   0   0   1   2   1
 1001	GRASS-drain_venu                   1   1   1   0   0   0   0   0   0   0   0   0   0
 1002	GRASS-nasi_venu                    1   2   0   0   0   0   0   0   0   0   0   0   0
 2001	FIRE-9tail                         1   0   1   0   0   0   0   0   0   0   0   1   0
 3001	WATER-dewgong                      0   0   0   0   0   0   0   0   0   0   0   0   0
-3002	WATER-eburn                        0   0   0   0   0   0   0   0   0   0   0   0   0
+3002	WATER-eburn                        0   0   2   0   0   0   0   0   0   0   1   1   1
