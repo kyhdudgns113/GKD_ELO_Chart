@@ -101,3 +101,23 @@ bool List_Name::isExist_name(string name) {
 	}
 	return false;
 }
+
+//	입력 : 원래이름, 바꿀이름
+//	출력 : 에러 여부, 없으면 0
+int List_Name::change_name(std::string dest, std::string src) {
+	ITERATOR_NAME it_name = this->name_list.begin();
+
+	while (it_name != this->name_list.end()) {
+		if (it_name->second == dest)
+			break;
+
+		it_name++;
+	}
+
+	if (it_name == this->name_list.end()) {
+		return 1;
+	}
+
+	it_name->second = src;
+	return 0;
+}
