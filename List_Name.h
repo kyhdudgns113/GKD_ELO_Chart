@@ -14,7 +14,5 @@ public :
 	int find_id(std::string);
 	bool isExist_id(int);
 	bool isExist_name(std::string);
-
-	int change_name(std::string, std::string);
 };
 

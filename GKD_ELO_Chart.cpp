@@ -599,7 +599,7 @@ int GKD_ELO_Chart::get_battle(std::string win, std::string lose, int how_much) {
 	this->deck_row[idw].elo += delta_elo + 0.001;
 	this->deck_row[idl].elo -= delta_elo;
 	printf("\n");
-	printf("DELTA : %.2lf / %d\n", delta_elo, GKD_ELO_DELTA[how_much]);
+	printf("DELTA : %.2lf / %.1lf\n", delta_elo, GKD_ELO_DELTA[how_much]);
 	printf("WIN  %s : %.2lf -> %.2lf\n", this->deck_row[idw].deck_name.c_str(), ew, ew + delta_elo);
 	printf("LOSE %s : %.2lf -> %.2lf\n", this->deck_row[idl].deck_name.c_str(), el, el - delta_elo);
 	
@@ -915,6 +915,7 @@ int GKD_ELO_Chart::get_tot_draw(int id) {
 }
 
 
+
 //	완
 //	전체 스코어 파일 어떻게 구성할건지 생각해야한다.
 //	작동 순서
@@ -1150,48 +1151,11 @@ input_result:
 	}
 }
 
-//	GKD_Master
-//	해당 id 의 이름을 바꾸고 baseinfo 에 덮어쓴다.
-//	후에 저장을 안하더라도 이름을 다시 바꾸면 되기때문에 별 상관이 없다.
-//
-//	속성이 동일한지 체크를 안한다.
-void GKD_ELO_Chart::mode_5_modify_name() {
 
-	char sbuf[64] = { 0, };
-	int id = 0;
+void GKD_ELO_Chart::mode_5_modify_name() {
 	printf("Mode 5 : modify_deck 을 실행합니다.\n");
 	printf("\n이름만 바꿀 수 있습니다.\n");
-	std::string input_string;
-	printf("이름을 바꿀 덱을 입력하십시오 : ");
-	std::cin >> input_string;
-
-	input_string = this->convert_name(input_string).second;
-
-	if (this->list_name.isExist_name(input_string) == false) {
-		id = atoi(input_string.c_str());
-		if (this->list_name.isExist_id(id) == false) {
-			printf("%s 는 존재하지 않습니다. \n", input_string.c_str());
-			return;
-		}
-		input_string = this->list_name.find_name(id);
-	}
-	else {
-		id = this->list_name.find_id(input_string);
-	}
-
-	std::string st2;
-
-	printf("바꿀 이름을 정해주십시오. : ");
-	std::cin >> st2;
-	std::pair<int, std::string > ret = this->convert_name(st2);
-	if (ret.first == NULL) {
-		printf("이름이 잘못되었습니다. \n");
-		return;
-	}
-	this->deck_row[id].deck_name = ret.second;
-
-	this->list_name.change_name(input_string, ret.second);
-
+	printf("아직 구현이 안되었습니다.\n");
 }
 
 //
@@ -1275,8 +1239,8 @@ void GKD_ELO_Chart::mode_41_print_id_all_col() {
 	ITERATOR_NAME it_name = this->list_name.name_list.begin();
 
 	printf("\n%d, %s 와의 상대전적을 봅니다. \n\n", id, input_string.c_str());
-	printf("기준의 ELO : %.2lf\n", this->deck_row[id].elo);
-	printf("기준의 승률 : %.2lf = %d / %d\n", this->get_win_rate(id), this->return_tot_win(id), this->return_tot_lose(id) + this->return_tot_win(id));
+	printf("이 덱의 ELO : %.2lf\n", this->deck_row[id].elo);
+	printf("이 덱의 승률 : %.2lf%% = %d / %d\n", this->get_win_rate(id), this->return_tot_win(id), this->return_tot_lose(id) + this->return_tot_win(id));
 	for (int i = 0; i < 45; i++)
 		printf(" ");
 	printf("W    D    L    현재승률  기대승률       ELO\n");
@@ -1285,12 +1249,15 @@ void GKD_ELO_Chart::mode_41_print_id_all_col() {
 			it_name++;
 			continue;
 		}
+
 		int id2 = it_name->first;
 		std::string name2 = it_name->second;
 		int w = this->deck_row[id].score_map[id2].sum_win();
 		int d = this->deck_row[id].score_map[id2].draw;
 		int l = this->deck_row[id].score_map[id2].sum_lose();
+
 		double rr = this->deck_row[id].score_map[id2].rate_win_lose();
+
 		double ew = pow(10, this->deck_row[id].elo / GKD_ELO_RATE_BASE);
 		double el = pow(10, this->deck_row[id2].elo / GKD_ELO_RATE_BASE);
 		double er = (ew) / (ew + el) * 100;
@@ -1305,7 +1272,10 @@ void GKD_ELO_Chart::mode_41_print_id_all_col() {
 			printf(" ");
 		if (rr < 10)
 			printf(" ");
-		printf("%3.2lf%%    ", rr);
+		if (w + l == 0)
+			printf("-----    ");
+		else
+			printf("%3.2lf%%    ", rr);
 
 		if (er < 100)
 			printf(" ");

@@ -17,12 +17,14 @@ const char STRING_DIR_RESULT[] = "Result";
 
 #define CNT_CARD			224
 
+//	GKD_ELO_BASE : 시작할때의 ELO
+//	GKD_ELO_BASE_RATE : 승기 기대값 10배 인 ELO 차이
 #define GKD_ELO_BASE		2000
 #define GKD_ELO_RATE_BASE	1000
 
 //	GKD_ELO_DELTA[i] : i 차이일때의 기본 점수
 //	i == 0 : 비겼을때의 기본 점수
-const int GKD_ELO_DELTA[] = { 0, 15, 16, 17, 18, 19, 20 };
+const double GKD_ELO_DELTA[] = { 0, 15, 16.5, 18, 19.5, 21, 22.5};
 
 
 #define ID_BASE_GRASS		1000
@@ -41,7 +43,7 @@ const int GKD_ELO_DELTA[] = { 0, 15, 16, 17, 18, 19, 20 };
 #define SSTRING				std::string
 
 typedef struct gkd_node_birth  {
-	int year = 2019;
+	int year = 2020;
 	int month = 1;
 	int day = 1;
 	int hour = 0;
