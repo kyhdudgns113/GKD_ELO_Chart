@@ -1,12 +1,12 @@
 ID	1002
 NAME	GRASS-GoldBok
-ELO	2009.651031
+ELO	1991.294587
 					  W6  W5  W4  W3  W2  W1   D  L1  L2  L3  L4  L5  L6
-	Total				   3   7   2   2   1   0   0   1   1   4   1   3   5
+	Total				   3   9   2   2   1   0   0   1   1   4   2   5   5
 1001	GRASS-DrainVenu                    0   2   0   0   1   0   0   0   1   0   1   0   0
 2001	FIRE-Ninetail                      0   0   0   0   0   0   0   0   0   2   0   1   2
 2002	FIRE-Charizard                     0   0   0   1   0   0   0   1   0   1   0   1   1
 3001	WATER-EnergyBurn                   1   1   0   0   0   0   0   0   0   1   0   1   1
 5001	FIGHT-Monkey                       0   2   2   0   0   0   0   0   0   0   0   0   1
 5002	FIGHT-Wiggle                       2   2   0   1   0   0   0   0   0   0   0   0   0
-6001	PSYCHIC-Nasi                       0   0   0   0   0   0   0   0   0   0   0   0   0
+6001	PSYCHIC-Nasi                       0   2   0   0   0   0   0   0   0   0   1   2   0
