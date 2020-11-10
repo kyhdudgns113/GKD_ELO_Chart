@@ -19,8 +19,10 @@ const char STRING_DIR_RESULT[] = "Result";
 
 //	GKD_ELO_BASE : 시작할때의 ELO
 //	GKD_ELO_BASE_RATE : 승기 기대값 10배 인 ELO 차이
+//	PREDICT_NUM_GAME : 향후 n 경기후 점수 예측에 사용할 n 값
 #define GKD_ELO_BASE		2000
 #define GKD_ELO_RATE_BASE	1000
+#define PREDICT_NUM_GAME	5
 
 //	GKD_ELO_DELTA[i] : i 차이일때의 기본 점수
 //	i == 0 : 비겼을때의 기본 점수
