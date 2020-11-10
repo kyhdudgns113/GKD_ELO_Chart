@@ -1292,12 +1292,13 @@ void GKD_ELO_Chart::mode_41_print_id_all_col() {
 			printf(" ");
 		printf("%.2lf\n", elos);
 
-		//	모든 팀당 5게임 이후, 예상되는 점수 변동폭 계산
+		//	각 덱에 대하여 모든 팀들과 PREDICT_NUM_GAME 만큼의 게임 이후, 예상되는 점수 변동폭 계산
 		double win_rate = rr / 100;
 		double lose_rate = 1 - win_rate;
 		double expected_win_rate = er / 100;
 		double expected_lose_rate = 1 - expected_win_rate;
-		expected_future += (expected_lose_rate * win_rate - expected_win_rate * lose_rate)*20*PREDICT_NUM_GAME;
+		if (w + l != 0)
+			expected_future += (expected_lose_rate * win_rate - expected_win_rate * lose_rate) * 20 * PREDICT_NUM_GAME;
 		it_name++;
 	}
 	printf("\n%d 경기후 예상 변동량은 %3.2lf\n", PREDICT_NUM_GAME, expected_future);
