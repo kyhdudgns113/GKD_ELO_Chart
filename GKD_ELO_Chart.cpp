@@ -1207,10 +1207,7 @@ void GKD_ELO_Chart::mode_34_print_all_row_elo() {
 		temp_row.win_rate = this->get_win_rate(id);
 
 		vec.push_back(temp_row);
-		if (cnt % 4 == 3)
-			printf("\n");
-		it_name++;
-		cnt++;
+		it_name++;		
 	}
 
 	std::sort(vec.begin(), vec.end(), cmp_row_elo);
@@ -1223,6 +1220,8 @@ void GKD_ELO_Chart::mode_34_print_all_row_elo() {
 		for (int j = 0; j < 24 - tlen; j++)
 			printf(" ");
 		printf(" : %.2lf, win_rate = %.2lf%%\n", vec[i].elo, vec[i].win_rate);
+		if (i % 4 == 3)
+			printf("\n");
 	}
 }
 
@@ -1320,7 +1319,7 @@ void GKD_ELO_Chart::mode_41_print_id_all_col() {
 		cnt++;
 		it_name++;
 	}
-	printf("\n%d 경기후 예상 변동량은 %3.2lf\n", PREDICT_NUM_GAME, expected_future);
+	printf("\n%d 경기후 예상 변동량은 %3.2lf -> %4.2lf\n", PREDICT_NUM_GAME, expected_future, this->deck_row[id].elo+expected_future);
 
 }
 
@@ -1333,8 +1332,6 @@ void GKD_ELO_Chart::mode_51_print_grouping() {
 	int entire_number = 0, i = 0, j = 0;
 	int member_number = 0;
 	int size_list = this->list_name.name_list.size();
-	std::random_device rd;
-	std::mt19937 gen(rd());
 
 	printf("전체 구성원 수를 입력하시오 (1~%d, -1 입력시 종료)\n", this->deck_row.size());
 
@@ -1360,15 +1357,17 @@ void GKD_ELO_Chart::mode_51_print_grouping() {
 	auto it = this->list_name.name_list.begin();
 
 	while (it != this->list_name.name_list.end()) {
-		entire_array[i].first = it->first;
-		entire_array[i].second = it->second;
+		entire_array[i] = (*it);
 
 		it++;
 		i++;
 	}
 
-
+	//	덱을 섞는다
+	std::random_device rd;
+	std::mt19937 gen(rd());
 	for (i = 0; i < size_list; i++) {
+		//	dis(a, b) : a 부터 b 까지 랜덤한 정수
 		std::uniform_int_distribution<int> dis(0, size_list - 1);
 
 		int temp = dis(gen);
@@ -1377,9 +1376,8 @@ void GKD_ELO_Chart::mode_51_print_grouping() {
 		entire_array[temp] = entire_array[size_list - i - 1];
 		entire_array[size_list - i - 1] = temp_pair;
 	}
-
 	
-
+	//	덱을 그룹별로 나눈다.
 	for (i = 0; i < entire_number / member_number; i++) {
 		printf("\n그룹 %d 의 멤버\n", i + 1);
 		int start_idx = size_list - i * member_number - member_number;

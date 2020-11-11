@@ -1,20 +1,20 @@
 ID	5001
 NAME	FIGHT-Monkey
-ELO	1895.328970
+ELO	1953.617782
 					  W6  W5  W4  W3  W2  W1   D  L1  L2  L3  L4  L5  L6
-	Total				   7   3   0   0   0   0   0   0   1   5   6   9   4
+	Total				  11   5   1   1   1   1   0   0   1   5   7  11   6
 1001	GRASS-DrainVenu                    3   0   0   0   0   0   0   0   0   0   0   0   2
 1002	GRASS-GoldBok                      1   0   0   0   0   0   0   0   0   0   2   2   0
-1003	GRASS-NidoKing                     0   0   0   0   0   0   0   0   0   0   0   0   0
+1003	GRASS-NidoKing                     2   1   0   0   0   0   0   0   0   0   1   0   1
 2001	FIRE-Ninetail                      0   0   0   0   0   0   0   0   0   2   1   2   0
 2002	FIRE-Charizard                     1   0   0   0   0   0   0   0   0   2   1   1   0
 2003	FIRE-Windy                         0   0   0   0   0   0   0   0   0   0   0   0   0
 3001	WATER-EnergyBurn                   0   0   0   0   0   0   0   0   0   1   2   2   0
 3002	WATER-Blast                        0   0   0   0   0   0   0   0   0   0   0   0   0
 4001	LIGHTNING-Zapdo                    0   0   0   0   0   0   0   0   0   0   0   0   0
-4002	LIGHTNING-Chain                    0   0   0   0   0   0   0   0   0   0   0   0   0
+4002	LIGHTNING-Chain                    0   1   1   0   1   0   0   0   0   0   0   1   1
 5002	FIGHT-Wiggle                       2   0   0   0   0   0   0   0   0   0   0   1   2
 5003	FIGHT-Bone                         0   0   0   0   0   0   0   0   0   0   0   0   0
 6001	PSYCHIC-Nasi                       0   3   0   0   0   0   0   0   1   0   0   1   0
-6002	PSYCHIC-AntiCarry                  0   0   0   0   0   0   0   0   0   0   0   0   0
+6002	PSYCHIC-AntiCarry                  2   0   0   1   0   1   0   0   0   0   0   1   0
 6003	PSYCHIC-Abra                       0   0   0   0   0   0   0   0   0   0   0   0   0

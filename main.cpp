@@ -25,6 +25,7 @@ int main() {
 		printf("33 or : 모든 row 확인, id순\n");
 		printf("34 or : 모든 row 확인, elo순\n");
 		printf("41 or : 특정 row의 각 col 확인, id순\n");
+		printf("51 or : 리그 구성\n");
 		printf("-1 : 저장 안하고 종료\n");
 
 		std::cin >> input_order;
@@ -53,7 +54,7 @@ int main() {
 			printf("Main while 취소 명령을 실행합니다. \n");
 			break;
 		}
-		printf("\n\n\n\n\n\n\n\n\n\n\n\n\n");
+		printf("\n\n\n\n");
 	}
 	printf("PROGRAM FINISHED\n");
 	return 0;		
