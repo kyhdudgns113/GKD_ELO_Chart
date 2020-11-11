@@ -6,8 +6,12 @@
 #include <iostream>
 #include <vector>
 #include <direct.h>
+#include <random>
 #include <time.h>
 
+bool cmp_name_list(std::pair<int, std::string> _a, std::pair<int, std::string> _b) {
+	return _a.first >= _b.first;
+}
 
 GKD_ELO_Chart::GKD_ELO_Chart() {
 	FILE* fp = fopen(STRING_CARD_LIST, "rt");
@@ -665,6 +669,7 @@ int GKD_ELO_Chart::get_battle(std::string win, std::string lose, int how_much) {
 }
 
 
+
 //	(완)
 //	입력 : 변환할 이름
 //	출력 : (id_base, 변환된 이름)
@@ -1165,6 +1170,9 @@ void GKD_ELO_Chart::mode_5_modify_name() {
 void GKD_ELO_Chart::mode_33_print_all_row_id() {
 	ITERATOR_NAME it_name = this->list_name.name_list.begin();
 	int cnt = 0;
+
+	printf("\n총 덱 수 : %d\n\n", this->list_name.name_list.size());
+
 	while (it_name != this->list_name.name_list.end()) {
 		int temp_id = it_name->first;
 		printf("(%d, %s) ", this->deck_row[temp_id].id, this->deck_row[temp_id].deck_name.c_str());
@@ -1172,7 +1180,11 @@ void GKD_ELO_Chart::mode_33_print_all_row_id() {
 		for (int j = 0; j < 24 - tlen; j++)
 			printf(" ");
 		printf(" : %.2lf, %.2lf%%\n", this->deck_row[temp_id].elo, this->get_win_rate(temp_id));
+
+		if (cnt % 4 == 3)
+			printf("\n");
 		it_name++;
+		cnt++;
 	}
 }
 
@@ -1183,8 +1195,8 @@ void GKD_ELO_Chart::mode_34_print_all_row_elo() {
 	std::vector<NODE_PRINTED_ROW> vec;
 	NODE_PRINTED_ROW temp_row;
 
-
 	ITERATOR_NAME it_name = this->list_name.name_list.begin();
+	int cnt = 0;
 
 	while (it_name != this->list_name.name_list.end()) {
 		int id = it_name->first;
@@ -1195,8 +1207,10 @@ void GKD_ELO_Chart::mode_34_print_all_row_elo() {
 		temp_row.win_rate = this->get_win_rate(id);
 
 		vec.push_back(temp_row);
-
+		if (cnt % 4 == 3)
+			printf("\n");
 		it_name++;
+		cnt++;
 	}
 
 	std::sort(vec.begin(), vec.end(), cmp_row_elo);
@@ -1245,6 +1259,7 @@ void GKD_ELO_Chart::mode_41_print_id_all_col() {
 	for (int i = 0; i < 45; i++)
 		printf(" ");
 	printf("W    D    L    현재승률  기대승률       ELO\n");
+	int cnt = 0;
 	while (it_name != this->list_name.name_list.end()) {
 		if (it_name->second == input_string) {
 			it_name++;
@@ -1299,8 +1314,85 @@ void GKD_ELO_Chart::mode_41_print_id_all_col() {
 		double expected_lose_rate = 1 - expected_win_rate;
 		if (w + l != 0)
 			expected_future += (expected_lose_rate * win_rate - expected_win_rate * lose_rate) * 20 * PREDICT_NUM_GAME;
+
+		if (cnt % 4 == 3)
+			printf("\n");
+		cnt++;
 		it_name++;
 	}
 	printf("\n%d 경기후 예상 변동량은 %3.2lf\n", PREDICT_NUM_GAME, expected_future);
 
 }
+
+//
+//	현재 보유중인 deck 들로 부분 리그들을 구성하여 출력한다.
+//
+void GKD_ELO_Chart::mode_51_print_grouping() {
+	printf("\nMODE_51 그룹핑을 실행합니다.\n");
+
+	int entire_number = 0, i = 0, j = 0;
+	int member_number = 0;
+	int size_list = this->list_name.name_list.size();
+	std::random_device rd;
+	std::mt19937 gen(rd());
+
+	printf("전체 구성원 수를 입력하시오 (1~%d, -1 입력시 종료)\n", this->deck_row.size());
+
+	std::cin >> entire_number;
+
+	if (entire_number > this->deck_row.size() || entire_number < 1) {
+		printf("초과된 범위의 입력입니다.\n");
+		return;
+	}
+
+
+	printf("그룹별 구성원 수를 입력하시오 (%d 의 약수, -1 입력시 종료)\n", this->deck_row.size());
+
+	std::cin >> member_number;
+
+	if (member_number < 1 || entire_number % member_number != 0) {
+		printf("잘못된 입력입니다. \n");
+		return;
+	}
+
+	std::pair<int, std::string> *entire_array = new std::pair<int, std::string>[size_list];
+
+	auto it = this->list_name.name_list.begin();
+
+	while (it != this->list_name.name_list.end()) {
+		entire_array[i].first = it->first;
+		entire_array[i].second = it->second;
+
+		it++;
+		i++;
+	}
+
+
+	for (i = 0; i < size_list; i++) {
+		std::uniform_int_distribution<int> dis(0, size_list - 1);
+
+		int temp = dis(gen);
+
+		std::pair<int, std::string> temp_pair = entire_array[temp];
+		entire_array[temp] = entire_array[size_list - i - 1];
+		entire_array[size_list - i - 1] = temp_pair;
+	}
+
+	
+
+	for (i = 0; i < entire_number / member_number; i++) {
+		printf("\n그룹 %d 의 멤버\n", i + 1);
+		int start_idx = size_list - i * member_number - member_number;
+		int end_idx = size_list - i * member_number;
+		std::sort(entire_array + start_idx, entire_array + end_idx, cmp_name_list);
+
+		for (j = 0; j < member_number; j++) {
+			int temp_idx = size_list - (1 + i * member_number + j);
+			printf("    %d, %s\n", entire_array[temp_idx].first, entire_array[temp_idx].second.c_str());
+		}
+			
+	}
+
+	delete[] entire_array;
+}
+

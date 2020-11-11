@@ -5,8 +5,16 @@ ELO	1943.341863
 	Total				   7   3   1   0   2   1   0   0   0   3   3  11   4
 1001	GRASS-DrainVenu                    2   1   1   0   0   0   0   0   0   0   0   1   0
 1002	GRASS-GoldBok                      0   0   0   0   0   0   0   0   0   1   0   2   2
+1003	GRASS-NidoKing                     0   0   0   0   0   0   0   0   0   0   0   0   0
 2001	FIRE-Ninetail                      1   0   0   0   0   0   0   0   0   2   0   2   0
 2002	FIRE-Charizard                     1   0   0   0   0   0   0   0   0   0   2   2   0
+2003	FIRE-Windy                         0   0   0   0   0   0   0   0   0   0   0   0   0
 3001	WATER-EnergyBurn                   1   0   0   0   0   0   0   0   0   0   0   4   0
+3002	WATER-Blast                        0   0   0   0   0   0   0   0   0   0   0   0   0
+4001	LIGHTNING-Zapdo                    0   0   0   0   0   0   0   0   0   0   0   0   0
+4002	LIGHTNING-Chain                    0   0   0   0   0   0   0   0   0   0   0   0   0
 5001	FIGHT-Monkey                       2   1   0   0   0   0   0   0   0   0   0   0   2
+5003	FIGHT-Bone                         0   0   0   0   0   0   0   0   0   0   0   0   0
 6001	PSYCHIC-Nasi                       0   1   0   0   2   1   0   0   0   0   1   0   0
+6002	PSYCHIC-AntiCarry                  0   0   0   0   0   0   0   0   0   0   0   0   0
+6003	PSYCHIC-Abra                       0   0   0   0   0   0   0   0   0   0   0   0   0

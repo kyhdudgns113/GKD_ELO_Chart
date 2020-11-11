@@ -13,6 +13,7 @@ int main() {
 
 	GKD_ELO_Chart gkd_chart;
 	std::string input_order;
+
 	
 	while (true) {
 		printf("Input order\n");
@@ -44,7 +45,9 @@ int main() {
 			gkd_chart.mode_34_print_all_row_elo();
 		else if (input_order == "41")
 			gkd_chart.mode_41_print_id_all_col();
-		else if (input_order == "cls")
+		else if (input_order == "51")
+			gkd_chart.mode_51_print_grouping();
+		else if (input_order == "cls" || input_order == "clr")
 			system("cls");
 		else if (input_order == "-1") {
 			printf("Main while 취소 명령을 실행합니다. \n");

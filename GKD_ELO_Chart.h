@@ -1,6 +1,7 @@
 #pragma once
 
 #include <unordered_map>
+#include <vector>
 
 #include "List_Record_Entire.h"
 #include "List_Name.h"
@@ -53,5 +54,6 @@ public :
 	void mode_33_print_all_row_id();
 	void mode_34_print_all_row_elo();
 	void mode_41_print_id_all_col();
+	void mode_51_print_grouping();
 
 };
