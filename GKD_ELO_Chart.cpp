@@ -1234,6 +1234,7 @@ void GKD_ELO_Chart::mode_41_print_id_all_col() {
 	std::string input_string;
 	int id = 0;
 	double expected_future = 0;
+	double total_win_rate = 0;
 
 	printf("¾î´À µ¦À» º¸½Ã°Ú½À´Ï±î? : ");
 	std::cin >> input_string;
@@ -1249,15 +1250,16 @@ void GKD_ELO_Chart::mode_41_print_id_all_col() {
 		input_string = this->list_name.find_name(id);
 	}
 	id = this->list_name.find_id(input_string);
+	total_win_rate = this->get_win_rate(id)/100.0;
 
 	ITERATOR_NAME it_name = this->list_name.name_list.begin();
 
-	printf("\n%d, %s ¿ÍÀÇ »ó´ëÀüÀûÀ» º¾´Ï´Ù. \n\n", id, input_string.c_str());
+	printf("\n\n%d, %s ¿ÍÀÇ »ó´ëÀüÀûÀ» º¾´Ï´Ù. \n\n", id, input_string.c_str());
 	printf("ÀÌ µ¦ÀÇ ELO : %.2lf\n", this->deck_row[id].elo);
 	printf("ÀÌ µ¦ÀÇ ½Â·ü : %.2lf%% = %d / %d\n", this->get_win_rate(id), this->return_tot_win(id), this->return_tot_lose(id) + this->return_tot_win(id));
 	for (int i = 0; i < 45; i++)
 		printf(" ");
-	printf("W    D    L    ÇöÀç½Â·ü  ±â´ë½Â·ü       ELO\n");
+	printf("W    D    L    ÇöÀç½Â·ü  ±â´ë½Â·ü       ELO   Future\n");
 	int cnt = 0;
 	while (it_name != this->list_name.name_list.end()) {
 		if (it_name->second == input_string) {
@@ -1304,15 +1306,30 @@ void GKD_ELO_Chart::mode_41_print_id_all_col() {
 			printf(" ");
 		if (elos < 10)
 			printf(" ");
-		printf("%.2lf\n", elos);
+		printf("%.2lf  ", elos);
 
 		//	°¢ µ¦¿¡ ´ëÇÏ¿© ¸ðµç ÆÀµé°ú PREDICT_NUM_GAME ¸¸Å­ÀÇ °ÔÀÓ ÀÌÈÄ, ¿¹»óµÇ´Â Á¡¼ö º¯µ¿Æø °è»ê
 		double win_rate = rr / 100;
 		double lose_rate = 1 - win_rate;
 		double expected_win_rate = er / 100;
 		double expected_lose_rate = 1 - expected_win_rate;
+		double delta = 0;
 		if (w + l != 0)
-			expected_future += (expected_lose_rate * win_rate - expected_win_rate * lose_rate) * 20 * PREDICT_NUM_GAME;
+			delta = (expected_lose_rate * win_rate - expected_win_rate * lose_rate) * 20 * PREDICT_NUM_GAME;
+		else
+			delta = (expected_lose_rate * total_win_rate - expected_win_rate * (1 - total_win_rate)) * 20 * PREDICT_NUM_GAME;
+		expected_future += delta;
+		if (delta >= 100)
+			printf(" ");
+		else if (delta >= 10)
+			printf("  ");
+		else if (delta >= 0)
+			printf("   ");
+		else if (delta > -10)
+			printf("  ");
+		else if (delta > -100)
+			printf(" ");
+		printf("%4.2lf\n", delta);
 
 		if (cnt % 4 == 3)
 			printf("\n");
