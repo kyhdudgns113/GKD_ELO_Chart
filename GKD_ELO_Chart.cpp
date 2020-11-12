@@ -602,11 +602,7 @@ int GKD_ELO_Chart::get_battle(std::string win, std::string lose, int how_much) {
 
 	this->deck_row[idw].elo += delta_elo + 0.001;
 	this->deck_row[idl].elo -= delta_elo;
-	printf("\n");
-	printf("DELTA : %.2lf / %.1lf\n", delta_elo, GKD_ELO_DELTA[how_much]);
-	printf("WIN  %s : %.2lf -> %.2lf\n", this->deck_row[idw].deck_name.c_str(), ew, ew + delta_elo);
-	printf("LOSE %s : %.2lf -> %.2lf\n", this->deck_row[idl].deck_name.c_str(), el, el - delta_elo);
-	
+
 	//	2. score 입력
 	//	
 	if (how_much) {
@@ -617,15 +613,19 @@ int GKD_ELO_Chart::get_battle(std::string win, std::string lose, int how_much) {
 		this->deck_row[idw].score_map[idl].draw++;
 		this->deck_row[idl].score_map[idw].draw++;
 	}
-	printf("\t상대전적\n");
-	printf("%s", this->deck_row[idw].deck_name.c_str());
-	int tlen = this->deck_row[idw].deck_name.length();
-	for (int asd = 0; asd < 32 - tlen; asd++)
-		printf(" ");
-	printf(" 무 ");
-	printf("%32s\n", this->deck_row[idl].deck_name.c_str());
-	printf("%4d\t\t\t\t%3d\t\t\t\t%4d\n", this->deck_row[idw].score_map[idl].sum_win(), this->deck_row[idw].score_map[idl].draw,
-		this->deck_row[idl].score_map[idw].sum_win());
+
+	int twin = this->deck_row[idw].score_map[idl].sum_win();
+	int tdraw = this->deck_row[idw].score_map[idl].draw;
+	int tlose = this->deck_row[idw].score_map[idl].sum_lose();
+
+	printf("\n\n");
+	printf("총합      %3d 전, DELTA : %.2lf / %.1lf\n\n", twin + tdraw + tlose, delta_elo, GKD_ELO_DELTA[how_much]);
+	printf("승:%d : %3d 승 %s : %.2lf -> %.2lf\n", idw, twin, win.c_str(), ew, ew + delta_elo);
+	//printf("승자: %3d 승_%s : %.2lf -> %.2lf\n", twin ,this->deck_row[idw].deck_name.c_str(), ew, ew + delta_elo);
+	printf(" 무승부   %3d 무\n", tdraw);
+	printf("패:%d : %3d 승 %s : %.2lf -> %.2lf\n", idl, tlose, lose.c_str(), el, el - delta_elo);
+	//printf("패자: %3d 승_%s : %.2lf -> %.2lf\n\n", tlose, this->deck_row[idl].deck_name.c_str(), el, el - delta_elo);
+	
 
 	//	3. record 입력
 
@@ -1050,7 +1050,7 @@ void GKD_ELO_Chart::mode_4_get_battle() {
 
 	//	1. a 와 b 를 입력받는 부분
 	//		각각 존재 여부와 생성여부를 확인한다.
-	printf("\nMODE_4 를 실행합니다.\n");
+	printf("\nMODE_4 를 실행합니다.\n\n");
 	printf("a 를 입력하여 주십시오 : ");
 	std::cin >> a;
 	if (a == "-1") {
@@ -1109,14 +1109,14 @@ void GKD_ELO_Chart::mode_4_get_battle() {
 	int how_much = 0;
 
 	printf("\n");
-	printf("a : %s\n", a.c_str());
+	printf("\na : %s\n", a.c_str());
 	printf("b : %s\n", b.c_str());
 input_result:
-	printf("누가 이겼나요? (a or b or draw or -1) : ");
+	printf("\n누가 이겼나요? (a or b or draw or -1) : ");
 	std::cin >> c;
 	
 	if (c[0] == 'a' || c[0] == 'A') {
-		printf("얼마나 차이가 나나요? : ");
+		printf("\n얼마나 차이가 나나요? : ");
 	win_a:
 		scanf("%d", &ibuf);
 		if (ibuf == -1) {

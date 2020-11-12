@@ -1,9 +1,9 @@
 ID	3002
 NAME	WATER-Blast
-ELO	2000.000000
+ELO	2036.641663
 					  W6  W5  W4  W3  W2  W1   D  L1  L2  L3  L4  L5  L6
-	Total				   0   0   0   0   0   0   0   0   0   0   0   0   0
-1001	GRASS-DrainVenu                    0   0   0   0   0   0   0   0   0   0   0   0   0
+	Total				   6   2   2   0   0   0   0   0   0   1   1   1   2
+1001	GRASS-DrainVenu                    2   1   0   0   0   0   0   0   0   1   0   1   0
 1002	GRASS-GoldBok                      0   0   0   0   0   0   0   0   0   0   0   0   0
 1003	GRASS-NidoKing                     0   0   0   0   0   0   0   0   0   0   0   0   0
 2001	FIRE-Ninetail                      0   0   0   0   0   0   0   0   0   0   0   0   0
@@ -13,8 +13,8 @@ ELO	2000.000000
 4001	LIGHTNING-Zapdo                    0   0   0   0   0   0   0   0   0   0   0   0   0
 4002	LIGHTNING-Chain                    0   0   0   0   0   0   0   0   0   0   0   0   0
 5001	FIGHT-Monkey                       0   0   0   0   0   0   0   0   0   0   0   0   0
-5002	FIGHT-Wiggle                       0   0   0   0   0   0   0   0   0   0   0   0   0
+5002	FIGHT-Wiggle                       0   0   2   0   0   0   0   0   0   0   1   0   2
 5003	FIGHT-Bone                         0   0   0   0   0   0   0   0   0   0   0   0   0
-6001	PSYCHIC-Nasi                       0   0   0   0   0   0   0   0   0   0   0   0   0
+6001	PSYCHIC-Nasi                       4   1   0   0   0   0   0   0   0   0   0   0   0
 6002	PSYCHIC-AntiCarry                  0   0   0   0   0   0   0   0   0   0   0   0   0
 6003	PSYCHIC-Abra                       0   0   0   0   0   0   0   0   0   0   0   0   0

@@ -1,20 +1,20 @@
 ID	1001
 NAME	GRASS-DrainVenu
-ELO	1926.087893
+ELO	1889.448762
 					  W6  W5  W4  W3  W2  W1   D  L1  L2  L3  L4  L5  L6
-	Total				   5   3   4   1   1   0   0   0   1   1   5   6   9
+	Total				   6   5   5   3   1   0   0   0   1   1   7   7  15
 1002	GRASS-GoldBok                      0   0   1   0   1   0   0   0   1   0   0   2   0
 1003	GRASS-NidoKing                     0   0   0   0   0   0   0   0   0   0   0   0   0
 2001	FIRE-Ninetail                      0   0   1   0   0   0   0   0   0   0   1   2   1
 2002	FIRE-Charizard                     1   0   0   0   0   0   0   0   0   0   3   0   2
 2003	FIRE-Windy                         0   0   0   0   0   0   0   0   0   0   0   0   0
 3001	WATER-EnergyBurn                   1   1   1   0   0   0   0   0   0   1   0   0   1
-3002	WATER-Blast                        0   0   0   0   0   0   0   0   0   0   0   0   0
+3002	WATER-Blast                        0   1   0   1   0   0   0   0   0   0   0   1   2
 4001	LIGHTNING-Zapdo                    0   0   0   0   0   0   0   0   0   0   0   0   0
 4002	LIGHTNING-Chain                    0   0   0   0   0   0   0   0   0   0   0   0   0
 5001	FIGHT-Monkey                       2   0   0   0   0   0   0   0   0   0   0   0   3
-5002	FIGHT-Wiggle                       0   1   0   0   0   0   0   0   0   0   1   1   2
+5002	FIGHT-Wiggle                       0   2   0   1   0   0   0   0   0   0   2   1   4
 5003	FIGHT-Bone                         0   0   0   0   0   0   0   0   0   0   0   0   0
-6001	PSYCHIC-Nasi                       1   1   1   1   0   0   0   0   0   0   0   1   0
+6001	PSYCHIC-Nasi                       2   1   2   1   0   0   0   0   0   0   1   1   2
 6002	PSYCHIC-AntiCarry                  0   0   0   0   0   0   0   0   0   0   0   0   0
 6003	PSYCHIC-Abra                       0   0   0   0   0   0   0   0   0   0   0   0   0
