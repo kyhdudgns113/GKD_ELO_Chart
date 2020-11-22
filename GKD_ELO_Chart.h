@@ -35,6 +35,9 @@ public :
 	int get_battle(std::string, std::string, int);
 
 	std::pair<int, std::string> convert_name(std::string);	
+	std::string find_name_with_id(int);
+	int print_color_deck_name_return_length(int, int);
+	int print_color_deck_number(int);
 	std::tuple<int*, int, int*> return_total_score_id(int);
 	std::tuple<int*, int, int*> get_total_score_id(int);
 	double return_win_rate(int);

@@ -1,18 +1,18 @@
 ID	6001
 NAME	PSYCHIC-Nasi
-ELO	1827.886876
+ELO	1837.576465
 					  W6  W5  W4  W3  W2  W1   D  L1  L2  L3  L4  L5  L6
-	Total				   2   7   3   0   1   0   0   2   2   1   8  17   7
+	Total				   2  10   3   1   2   0   0   2   2   2   9  19   8
 1001	GRASS-DrainVenu                    2   1   1   0   0   0   0   0   0   1   2   1   2
 1002	GRASS-GoldBok                      0   2   1   0   0   0   0   0   0   0   0   2   0
-1003	GRASS-NidoKing                     0   0   0   0   0   0   0   0   0   0   0   0   0
+1003	GRASS-NidoKing                     0   2   0   1   0   0   0   0   0   1   1   0   0
 2001	FIRE-Ninetail                      0   0   0   0   0   0   0   0   0   0   1   4   0
 2002	FIRE-Charizard                     0   0   0   0   0   0   0   0   0   0   3   2   0
 2003	FIRE-Windy                         0   0   0   0   0   0   0   0   0   0   0   0   0
 3001	WATER-EnergyBurn                   0   2   0   0   0   0   0   0   0   0   0   2   1
 3002	WATER-Blast                        0   0   0   0   0   0   0   0   0   0   0   1   4
 4001	LIGHTNING-Zapdo                    0   0   0   0   0   0   0   0   0   0   0   0   0
-4002	LIGHTNING-Chain                    0   0   0   0   0   0   0   0   0   0   0   0   0
+4002	LIGHTNING-Chain                    0   1   0   0   1   0   0   0   0   0   0   2   1
 5001	FIGHT-Monkey                       0   1   0   0   1   0   0   0   0   0   0   3   0
 5002	FIGHT-Wiggle                       0   1   1   0   0   0   0   2   2   0   2   2   0
 5003	FIGHT-Bone                         0   0   0   0   0   0   0   0   0   0   0   0   0

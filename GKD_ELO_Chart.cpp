@@ -8,6 +8,7 @@
 #include <direct.h>
 #include <random>
 #include <time.h>
+#include <Windows.h>
 
 bool cmp_name_list(std::pair<int, std::string> _a, std::pair<int, std::string> _b) {
 	return _a.first >= _b.first;
@@ -560,7 +561,7 @@ int GKD_ELO_Chart::insert_saved_deck(int id, std::string input_string) {
 	//	INFO 파일
 	fp = fopen((str_id + "_info.txt").c_str(), "rt");
 	if (fp == nullptr) {
-		printf("%d 의 구성 파일은 없습니다.\n", id);
+		//printf("%d 의 구성 파일은 없습니다.\n", id);
 		chdir("../../../");
 		return 0;
 	}
@@ -620,11 +621,20 @@ int GKD_ELO_Chart::get_battle(std::string win, std::string lose, int how_much) {
 
 	printf("\n\n");
 	printf("총합      %3d 전, DELTA : %.2lf / %.1lf\n\n", twin + tdraw + tlose, delta_elo, GKD_ELO_DELTA[how_much]);
-	printf("승:%d : %3d 승 %s : %.2lf -> %.2lf\n", idw, twin, win.c_str(), ew, ew + delta_elo);
-	//printf("승자: %3d 승_%s : %.2lf -> %.2lf\n", twin ,this->deck_row[idw].deck_name.c_str(), ew, ew + delta_elo);
+
+	printf("승: ");
+	this->print_color_deck_number(idw);
+	printf(" : %3d 승 ", twin);
+	this->print_color_deck_name_return_length(idw, NULL);
+	printf(" : %.2lf -> %.2lf\n", ew, ew + delta_elo);
+
 	printf(" 무승부   %3d 무\n", tdraw);
-	printf("패:%d : %3d 승 %s : %.2lf -> %.2lf\n", idl, tlose, lose.c_str(), el, el - delta_elo);
-	//printf("패자: %3d 승_%s : %.2lf -> %.2lf\n\n", tlose, this->deck_row[idl].deck_name.c_str(), el, el - delta_elo);
+
+	printf("패: ");
+	this->print_color_deck_number(idw);
+	printf(" : %3d 승 ", tlose);
+	this->print_color_deck_name_return_length(idl, NULL);
+	printf(" : %.2lf -> %.2lf\n", el, el - delta_elo);
 	
 
 	//	3. record 입력
@@ -815,6 +825,122 @@ std::pair<int, std::string> GKD_ELO_Chart::convert_name(std::string input_string
 	}
 	return std::pair<int, std::string>(id_base, input_string);
 }
+
+
+std::string GKD_ELO_Chart::find_name_with_id(int _id) {
+	return this->list_name.find_name(_id);
+}
+
+//
+//	입력
+//		_id : 이름을 출력할 id
+//		_mode : & 1 == 길이만큼 스페이스를 출력할지
+//				& 2 == 스페이스 여부 이후에 \n 을 할지
+//
+//	기능
+//		해당 덱의 이름을 타입에 맞는 색으로 출력함.
+//	
+//	리턴
+//		-1 : 해당 id 가 없을때
+//		else : 이름의 길이
+//
+int GKD_ELO_Chart::print_color_deck_name_return_length(int _id, int _mode) {
+	std::string deck_name = this->find_name_with_id(_id);
+	int deck_type = _id / 1000;
+	int len = deck_name.size();
+	int i = 0;
+
+	if (deck_name == NULL_STRING) {
+		printf("ID : %d 는 존재하지 않습니다. \n", _id);
+		return -1;
+	}
+
+	switch (deck_type) {
+	case 1:
+		SET_COLOR(COLOR_GREEN);
+		break;
+	case 2:
+		SET_COLOR(COLOR_DARK_RED);
+		break;
+	case 3:
+		SET_COLOR(COLOR_BLUE);
+		break;
+	case 4:
+		SET_COLOR(COLOR_YELLOW);
+		break;
+	case 5:
+		SET_COLOR(COLOR_DARK_YELLOW);
+		break;
+	case 6:
+		SET_COLOR(COLOR_PINK);
+		break;
+	default:
+		break;
+	}
+	printf("%s", deck_name.c_str());
+
+	SET_COLOR(COLOR_DARK_WHITE);
+
+	if (_mode & PRINT_LENGTH_BLANK) {
+		for (i = 0; i < PRINT_BLANK_BASE - len; i++)
+			printf(" ");
+	}
+	if (_mode & PRINT_ENTER)
+		printf("\n");
+
+	return len;
+}
+
+//
+//	입력
+//		_id : id 를 출력할 id
+//
+//	기능
+//		해당 덱의 id를 타입에 맞는 색으로 출력함.
+//	
+//	리턴
+//		-1 : 해당 id 가 없을때
+//		else : 이름의 길이
+//
+int GKD_ELO_Chart::print_color_deck_number(int _id) {
+	std::string deck_name = this->find_name_with_id(_id);
+
+	if (deck_name == NULL_STRING) {
+		printf("ID : %d 는 존재하지 않습니다. \n", _id);
+		return -1;
+	}
+
+	int deck_type = _id / 1000;
+
+	switch (deck_type) {
+	case 1:
+		SET_COLOR(COLOR_GREEN);
+		break;
+	case 2:
+		SET_COLOR(COLOR_DARK_RED);
+		break;
+	case 3:
+		SET_COLOR(COLOR_BLUE);
+		break;
+	case 4:
+		SET_COLOR(COLOR_YELLOW);
+		break;
+	case 5:
+		SET_COLOR(COLOR_DARK_YELLOW);
+		break;
+	case 6:
+		SET_COLOR(COLOR_PINK);
+		break;
+	default:
+		break;
+	}
+	printf("%d", _id);
+
+	SET_COLOR(COLOR_DARK_WHITE);
+
+	return deck_name.size();
+}
+
 
 //
 //	해당 id 의 전체 score 를 리턴한다.
@@ -1109,8 +1235,10 @@ void GKD_ELO_Chart::mode_4_get_battle() {
 	int how_much = 0;
 
 	printf("\n");
-	printf("\na : %s\n", a.c_str());
-	printf("b : %s\n", b.c_str());
+	printf("\na : ");
+	this->print_color_deck_name_return_length(ia, PRINT_ENTER);
+	printf("b : ");
+	this->print_color_deck_name_return_length(ib, PRINT_ENTER);
 input_result:
 	printf("\n누가 이겼나요? (a or b or draw or -1) : ");
 	std::cin >> c;
@@ -1175,10 +1303,11 @@ void GKD_ELO_Chart::mode_33_print_all_row_id() {
 
 	while (it_name != this->list_name.name_list.end()) {
 		int temp_id = it_name->first;
-		printf("(%d, %s) ", this->deck_row[temp_id].id, this->deck_row[temp_id].deck_name.c_str());
-		int tlen = this->deck_row[temp_id].deck_name.length();
-		for (int j = 0; j < 24 - tlen; j++)
-			printf(" ");
+		printf(" ");
+		this->print_color_deck_number(temp_id);
+		printf(": ");
+
+		int tlen = this->print_color_deck_name_return_length(temp_id, PRINT_LENGTH_BLANK);
 		printf(" : %.2lf, %.2lf%%\n", this->deck_row[temp_id].elo, this->get_win_rate(temp_id));
 
 		if (cnt % 4 == 3)
@@ -1198,6 +1327,7 @@ void GKD_ELO_Chart::mode_34_print_all_row_elo() {
 	ITERATOR_NAME it_name = this->list_name.name_list.begin();
 	int cnt = 0;
 
+	printf("\n");
 	while (it_name != this->list_name.name_list.end()) {
 		int id = it_name->first;
 
@@ -1215,11 +1345,14 @@ void GKD_ELO_Chart::mode_34_print_all_row_elo() {
 	int len = vec.size();
 
 	for (int i = 0; i < len; i++) {
-		int tlen = strlen(vec[i].name);
-		printf("(%d, %s) ", vec[i].id, vec[i].name);
-		for (int j = 0; j < 24 - tlen; j++)
-			printf(" ");
-		printf(" : %.2lf, win_rate = %.2lf%%\n", vec[i].elo, vec[i].win_rate);
+		int temp_id = vec[i].id;
+
+		printf(" ");
+		this->print_color_deck_number(temp_id);
+		printf(": ");
+		int tlen = this->print_color_deck_name_return_length(temp_id, PRINT_LENGTH_BLANK);
+		printf(" : %.2lf, %.2lf%%\n", this->deck_row[temp_id].elo, this->get_win_rate(temp_id));
+
 		if (i % 4 == 3)
 			printf("\n");
 	}
@@ -1254,7 +1387,10 @@ void GKD_ELO_Chart::mode_41_print_id_all_col() {
 
 	ITERATOR_NAME it_name = this->list_name.name_list.begin();
 
-	printf("\n\n%d, %s 와의 상대전적을 봅니다. \n\n", id, input_string.c_str());
+	printf("\n\n%d, ", id);
+	this->print_color_deck_name_return_length(id, NULL);
+	printf(" 와의 상대전적을 봅니다. \n\n");
+
 	printf("이 덱의 ELO : %.2lf\n", this->deck_row[id].elo);
 	printf("이 덱의 승률 : %.2lf%% = %d / %d\n", this->get_win_rate(id), this->return_tot_win(id), this->return_tot_lose(id) + this->return_tot_win(id));
 	for (int i = 0; i < 45; i++)
@@ -1279,10 +1415,14 @@ void GKD_ELO_Chart::mode_41_print_id_all_col() {
 		double el = pow(10, this->deck_row[id2].elo / GKD_ELO_RATE_BASE);
 		double er = (ew) / (ew + el) * 100;
 		double elos = this->deck_row[id2].elo;
-		printf("%d : %s", id2, name2.c_str());
-		int tlen = name2.length();
+
+		this->print_color_deck_number(id2);
+		printf(": ");
+
+		int tlen = this->print_color_deck_name_return_length(id2, NULL);
 		for (int i = 0; i < 32 - tlen; i++)
 			printf(" ");
+
 		printf(" : %4d %4d %4d    ", w, d, l);
 
 		if (rr < 100)
@@ -1403,7 +1543,11 @@ void GKD_ELO_Chart::mode_51_print_grouping() {
 
 		for (j = 0; j < member_number; j++) {
 			int temp_idx = size_list - (1 + i * member_number + j);
-			printf("    %d, %s\n", entire_array[temp_idx].first, entire_array[temp_idx].second.c_str());
+			printf("    ");
+			this->print_color_deck_number(entire_array[temp_idx].first);
+			printf(", ");
+			this->print_color_deck_name_return_length(entire_array[temp_idx].first, NULL);
+			printf("\n"); 
 		}
 			
 	}

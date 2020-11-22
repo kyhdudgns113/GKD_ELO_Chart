@@ -44,6 +44,29 @@ const double GKD_ELO_DELTA[] = { 0, 15, 16.5, 18, 19.5, 21, 22.5};
 
 #define SSTRING				std::string
 
+
+#define SET_COLOR(a)		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), a)
+#define COLOR_BLACK			0
+#define COLOR_DARK_BLUE		1
+#define COLOR_DARK_GREEN	2
+#define COLOR_DARK_SKY		3
+#define COLOR_DARK_RED		4
+#define COLOR_DARK_PINK		5
+#define COLOR_DARK_YELLOW	6
+#define COLOR_DARK_WHITE	7
+#define COLOR_GREY			8
+#define COLOR_BLUE			9
+#define COLOR_GREEN			10
+#define COLOR_SKY			11
+#define COLOR_RED			12
+#define COLOR_PINK			13
+#define COLOR_YELLOW		14
+#define COLOR_WHITE			15
+
+#define PRINT_BLANK_BASE	24
+#define PRINT_LENGTH_BLANK	1
+#define PRINT_ENTER			2
+
 typedef struct gkd_node_birth  {
 	int year = 2020;
 	int month = 1;
