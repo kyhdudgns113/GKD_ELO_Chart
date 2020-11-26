@@ -1,8 +1,8 @@
 ID	5002
 NAME	FIGHT-Wiggle
-ELO	2050.991701
+ELO	2117.744720
 					  W6  W5  W4  W3  W2  W1   D  L1  L2  L3  L4  L5  L6
-	Total				  17   4   6   1   2   2   0   0   0   4   5  15   4
+	Total				  21   7   6   2   3   2   0   0   0   4   5  16   4
 1001	GRASS-DrainVenu                    4   1   2   0   0   0   0   0   0   1   0   2   0
 1002	GRASS-GoldBok                      0   0   0   0   0   0   0   0   0   1   0   2   2
 1003	GRASS-NidoKing                     3   0   0   1   0   0   0   0   0   0   0   1   0
@@ -13,8 +13,8 @@ ELO	2050.991701
 3002	WATER-Blast                        2   0   1   0   0   0   0   0   0   0   2   0   0
 4001	LIGHTNING-Zapdo                    0   0   0   0   0   0   0   0   0   0   0   0   0
 4002	LIGHTNING-Chain                    3   0   1   0   0   0   0   0   0   0   0   1   0
-5001	FIGHT-Monkey                       2   1   0   0   0   0   0   0   0   0   0   0   2
+5001	FIGHT-Monkey                       4   2   0   1   0   0   0   0   0   0   0   1   2
 5003	FIGHT-Bone                         0   0   0   0   0   0   0   0   0   0   0   0   0
 6001	PSYCHIC-Nasi                       0   2   2   0   2   2   0   0   0   0   1   1   0
-6002	PSYCHIC-AntiCarry                  0   0   0   0   0   0   0   0   0   0   0   0   0
+6002	PSYCHIC-AntiCarry                  2   2   0   0   1   0   0   0   0   0   0   0   0
 6003	PSYCHIC-Abra                       0   0   0   0   0   0   0   0   0   0   0   0   0

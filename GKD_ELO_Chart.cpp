@@ -599,7 +599,7 @@ int GKD_ELO_Chart::get_battle(std::string win, std::string lose, int how_much) {
 
 	double lose_rate = els / (ews + els);	//	Áø ³ðÀÌ ÀÌ±ä È®·üÀ» °öÇØ¾ß ÇÑ´Ù.
 
-	delta_elo = lose_rate * GKD_ELO_DELTA[how_much];
+	delta_elo = lose_rate * GKD_ELO_DELTA[how_much] + GKD_ELO_DELTA_PLUS[how_much];
 
 	this->deck_row[idw].elo += delta_elo + 0.001;
 	this->deck_row[idl].elo -= delta_elo;
@@ -620,7 +620,11 @@ int GKD_ELO_Chart::get_battle(std::string win, std::string lose, int how_much) {
 	int tlose = this->deck_row[idw].score_map[idl].sum_lose();
 
 	printf("\n\n");
-	printf("ÃÑÇÕ      %3d Àü, DELTA : %.2lf / %.1lf\n\n", twin + tdraw + tlose, delta_elo, GKD_ELO_DELTA[how_much]);
+	if (GKD_ELO_DELTA_PLUS[how_much])
+		printf("ÃÑÇÕ      %3d Àü, DELTA : (%.2lf+%.1lf) / (%.1lf) = %.2lf\n\n", twin + tdraw + tlose, lose_rate * GKD_ELO_DELTA[how_much],
+			GKD_ELO_DELTA_PLUS[how_much],  GKD_ELO_DELTA[how_much], delta_elo);
+	else
+		printf("ÃÑÇÕ      %3d Àü, DELTA : %.2lf / %.1lf\n\n", twin + tdraw + tlose, delta_elo, GKD_ELO_DELTA[how_much]);
 
 	printf("½Â: ");
 	this->print_color_deck_number(idw);
@@ -1423,7 +1427,7 @@ void GKD_ELO_Chart::mode_41_print_id_all_col() {
 		for (int i = 0; i < 32 - tlen; i++)
 			printf(" ");
 
-		printf(" : %4d %4d %4d    ", w, d, l);
+		printf("  : %4d %4d %4d    ", w, d, l);
 
 		if (rr < 100)
 			printf(" ");

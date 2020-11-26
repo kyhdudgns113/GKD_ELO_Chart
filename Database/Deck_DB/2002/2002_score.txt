@@ -1,10 +1,10 @@
 ID	2002
 NAME	FIRE-Charizard
-ELO	2104.220188
+ELO	2141.895299
 					  W6  W5  W4  W3  W2  W1   D  L1  L2  L3  L4  L5  L6
-	Total				   5   9  14   3   1   1   0   1   2   2   4   3   6
+	Total				   6  10  15   4   2   1   0   1   2   2   4   3   6
 1001	GRASS-DrainVenu                    2   0   3   0   0   0   0   0   0   0   0   0   1
-1002	GRASS-GoldBok                      1   1   0   1   0   1   0   0   0   1   0   0   0
+1002	GRASS-GoldBok                      2   2   1   2   1   1   0   0   0   1   0   0   0
 1003	GRASS-NidoKing                     0   0   0   0   0   0   0   0   0   0   0   0   0
 2001	FIRE-Ninetail                      0   0   2   0   0   0   0   1   0   0   2   0   0
 2003	FIRE-Windy                         0   0   0   0   0   0   0   0   0   0   0   0   0

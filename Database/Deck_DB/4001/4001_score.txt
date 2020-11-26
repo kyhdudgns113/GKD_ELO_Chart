@@ -1,10 +1,10 @@
 ID	4001
 NAME	LIGHTNING-Zapdo
-ELO	2075.492990
+ELO	2112.504281
 					  W6  W5  W4  W3  W2  W1   D  L1  L2  L3  L4  L5  L6
-	Total				   2   6   2   0   1   0   0   0   1   0   1   1   1
+	Total				   2   9   3   0   2   0   0   0   1   0   1   1   1
 1001	GRASS-DrainVenu                    0   0   0   0   0   0   0   0   0   0   0   0   0
-1002	GRASS-GoldBok                      0   0   0   0   0   0   0   0   0   0   0   0   0
+1002	GRASS-GoldBok                      0   3   1   0   1   0   0   0   0   0   0   0   0
 1003	GRASS-NidoKing                     0   0   0   0   0   0   0   0   0   0   0   0   0
 2001	FIRE-Ninetail                      0   0   0   0   0   0   0   0   0   0   0   0   0
 2002	FIRE-Charizard                     1   1   0   0   1   0   0   0   1   0   1   0   0

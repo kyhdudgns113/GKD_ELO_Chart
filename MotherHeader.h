@@ -25,8 +25,10 @@ const char STRING_DIR_RESULT[] = "Result";
 #define PREDICT_NUM_GAME	5
 
 //	GKD_ELO_DELTA[i] : i 차이일때의 기본 점수
-//	i == 0 : 비겼을때의 기본 점수
+//		i == 0 : 비겼을때의 기본 점수
+//	GLD_ELO_DELTA_PLUS : 기본 증감 점수, 변화량 = GED[i] + GEDA 
 const double GKD_ELO_DELTA[] = { 0, 15, 16.5, 18, 19.5, 21, 22.5};
+const double GKD_ELO_DELTA_PLUS[] = {0, 0, 0, 0, 0, 1, 1.5};
 
 
 #define ID_BASE_GRASS		1000
