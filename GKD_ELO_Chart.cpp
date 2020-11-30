@@ -621,7 +621,7 @@ int GKD_ELO_Chart::get_battle(std::string win, std::string lose, int how_much) {
 
 	printf("\n\n");
 	if (GKD_ELO_DELTA_PLUS[how_much])
-		printf("รัวี      %3d ภü, DELTA : (%.2lf+%.1lf) / (%.1lf) = %.2lf\n\n", twin + tdraw + tlose, lose_rate * GKD_ELO_DELTA[how_much],
+		printf("รัวี      %3d ภü, DELTA : (%.2lf + %.1lf) / (%.1lf) = %.2lf\n\n", twin + tdraw + tlose, lose_rate * GKD_ELO_DELTA[how_much],
 			GKD_ELO_DELTA_PLUS[how_much],  GKD_ELO_DELTA[how_much], delta_elo);
 	else
 		printf("รัวี      %3d ภü, DELTA : %.2lf / %.1lf\n\n", twin + tdraw + tlose, delta_elo, GKD_ELO_DELTA[how_much]);

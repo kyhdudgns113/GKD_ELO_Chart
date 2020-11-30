@@ -1,14 +1,14 @@
 ID	4001
 NAME	LIGHTNING-Zapdo
-ELO	2112.504281
+ELO	2024.656795
 					  W6  W5  W4  W3  W2  W1   D  L1  L2  L3  L4  L5  L6
-	Total				   2   9   3   0   2   0   0   0   1   0   1   1   1
+	Total				   2  12   3   0   2   0   0   0   2   0   7   4   3
 1001	GRASS-DrainVenu                    0   0   0   0   0   0   0   0   0   0   0   0   0
 1002	GRASS-GoldBok                      0   3   1   0   1   0   0   0   0   0   0   0   0
 1003	GRASS-NidoKing                     0   0   0   0   0   0   0   0   0   0   0   0   0
-2001	FIRE-Ninetail                      0   0   0   0   0   0   0   0   0   0   0   0   0
+2001	FIRE-Ninetail                      0   1   0   0   0   0   0   0   1   0   1   1   1
 2002	FIRE-Charizard                     1   1   0   0   1   0   0   0   1   0   1   0   0
-2003	FIRE-Windy                         0   0   0   0   0   0   0   0   0   0   0   0   0
+2003	FIRE-Windy                         0   2   0   0   0   0   0   0   0   0   0   2   1
 3001	WATER-EnergyBurn                   0   3   0   0   0   0   0   0   0   0   0   1   1
 3002	WATER-Blast                        0   0   0   0   0   0   0   0   0   0   0   0   0
 4002	LIGHTNING-Chain                    0   0   0   0   0   0   0   0   0   0   0   0   0
@@ -17,4 +17,4 @@ ELO	2112.504281
 5003	FIGHT-Bone                         1   2   2   0   0   0   0   0   0   0   0   0   0
 6001	PSYCHIC-Nasi                       0   0   0   0   0   0   0   0   0   0   0   0   0
 6002	PSYCHIC-AntiCarry                  0   0   0   0   0   0   0   0   0   0   0   0   0
-6003	PSYCHIC-Abra                       0   0   0   0   0   0   0   0   0   0   0   0   0
+6003	PSYCHIC-Abra                       0   0   0   0   0   0   0   0   0   0   5   0   0
