@@ -1,11 +1,11 @@
 ID	2001
 NAME	FIRE-Ninetail
-ELO	2297.492301
+ELO	2327.861360
 					  W6  W5  W4  W3  W2  W1   D  L1  L2  L3  L4  L5  L6
-	Total				   9  21   9  10   2   6   0   0   1   1   5   3   3
+	Total				  10  22  10  10   3   7   0   0   1   1   5   3   3
 1001	GRASS-DrainVenu                    1   2   1   0   0   0   0   0   0   0   1   0   0
 1002	GRASS-GoldBok                      2   3   0   3   0   2   0   0   0   0   0   0   0
-1003	GRASS-NidoKing                     0   0   0   0   0   0   0   0   0   0   0   0   0
+1003	GRASS-NidoKing                     1   1   1   0   1   1   0   0   0   0   0   0   0
 2002	FIRE-Charizard                     1   0   3   0   0   3   0   0   0   0   3   0   0
 2003	FIRE-Windy                         0   2   0   0   0   0   0   0   1   0   1   0   1
 3001	WATER-EnergyBurn                   2   1   1   1   0   1   0   0   0   1   0   2   1
