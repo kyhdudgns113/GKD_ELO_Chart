@@ -27,6 +27,10 @@ public:
 	void set_score(int[], int, int[]);
 	std::tuple<int*, int, int*> return_score();
 
+	void increase_win(int);
+	void increase_draw();
+	void increase_lose(int);
+
 	double rate_win_lose();
 
 	void _debug_print_score();

@@ -4,6 +4,8 @@
 #pragma once
 #pragma warning(disable:4996)	//	printf, scanf
 #pragma warning(disable:6031)
+#pragma warning(disable:4018)	//	sign, unsigned
+#pragma warning(disable:6385)
 
 #define NULL_STRING			"NULL"
 const char STRING_SCORE_ENTIRE[] = "entire_score.txt";

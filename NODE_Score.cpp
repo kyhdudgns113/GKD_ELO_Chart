@@ -86,3 +86,23 @@ void NODE_Score::_debug_print_score() {
 		printf("%d ", this->lose[i]);
 	printf("\n");
 }
+
+void NODE_Score::increase_win(int _arg) {
+	if (_arg < 1 || _arg > 6) {
+		printf("(Node_Score) 잘못된 _arg %d 가 입력되었다. \n", _arg);
+		return;
+	}
+	this->win[_arg]++;
+}
+
+void NODE_Score::increase_draw() {
+	this->draw++;
+}
+
+void NODE_Score::increase_lose(int _arg) {
+	if (_arg < 1 || _arg > 6) {
+		printf("(Node_Score) 잘못된 _arg %d 가 입력되었다. \n", _arg);
+		return;
+	}
+	this->lose[_arg]++;
+}

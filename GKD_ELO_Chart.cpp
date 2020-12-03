@@ -87,7 +87,12 @@ int GKD_ELO_Chart::write_name_list() {
 }
 
 //	기본폴더에서 시작한다.
-//	만약 개별 폴더가 없다면 여기서 만들어준다,
+//	- Database 폴더 없으면 생성
+//	- Database 폴더 내부에 Deck_DB 폴더 없으면 생성
+//	- Deck_DB 폴더 내부에 고유 폴더(ex 1001) 없으면 생성
+//	- 이 경우에는 당연히 base_info.txt 가 없기 때문에 생성
+//	- 고유 폴더 있으면 score.txt 새로 작성
+//	- record.txt 는 여기서 작성 안함
 void GKD_ELO_Chart::write_each_score() {
 	ITERATOR_NAME it_i, it_j;
 	int i, j, id = 0, ret = 0;
@@ -354,6 +359,15 @@ void GKD_ELO_Chart::write_entire_record() {
 	_chdir("../");
 }
 
+void GKD_ELO_Chart::write_modified_deck_name() {
+
+
+	if (_chdir(STRING_DIR_DB)) {
+		printf("이름 바꾼거 적는데 Database 폴더를 인식 못하네\n");
+		return;
+	}
+}
+
 //	파일 열기, 닫기는 여기서 안한다.
 //	다 기록하고 공백을 추가한다.
 void GKD_ELO_Chart::write_record_node(FILE *fp, NODE_Record_Entire nd) {
@@ -411,7 +425,6 @@ int GKD_ELO_Chart::insert_new_deck(std::string input_string) {
 	id_base = pbuf.first;
 	input_string = pbuf.second;
 	if (id_base == NULL) {
-		printf("이름이 잘못되었습니다. %s\n", input_string.c_str());
 		return 31;
 	}
 
@@ -635,7 +648,7 @@ int GKD_ELO_Chart::get_battle(std::string win, std::string lose, int how_much) {
 	printf(" 무승부   %3d 무\n", tdraw);
 
 	printf("패: ");
-	this->print_color_deck_number(idw);
+	this->print_color_deck_number(idl);
 	printf(" : %3d 승 ", tlose);
 	this->print_color_deck_name_return_length(idl, NULL);
 	printf(" : %.2lf -> %.2lf\n", el, el - delta_elo);
@@ -836,13 +849,45 @@ std::string GKD_ELO_Chart::find_name_with_id(int _id) {
 }
 
 //
+//	입력 : Input string
+//	기능 : ID 혹은 NAME 을 입력받아서 차트에 존재한다면 Convert 된 이름을 출력한다.
+//	출력 : 
+//		- Convert 된 이름
+//		- NULL_STRING : 이름이 차트에 없다.
+//		- "-1" : 취소 명령
+//
+std::string GKD_ELO_Chart::find_name_with_input_string(std::string _input_string) {
+
+	bool isExist = false;
+	int deck_id = 0;
+
+	if (_input_string == "-1") {
+		return "-1";
+	}
+	_input_string = this->convert_name(_input_string).second;
+
+	isExist = this->list_name.isExist_name(_input_string);
+
+	if (isExist == false) {
+		deck_id = atoi(_input_string.c_str());
+		if (this->list_name.isExist_id(deck_id) == false)
+			return NULL_STRING;
+		else
+			_input_string = this->list_name.find_name(deck_id);
+	}
+
+	return _input_string;
+}
+
+//
 //	입력
 //		_id : 이름을 출력할 id
 //		_mode : & 1 == 길이만큼 스페이스를 출력할지
 //				& 2 == 스페이스 여부 이후에 \n 을 할지
 //
 //	기능
-//		해당 덱의 이름을 타입에 맞는 색으로 출력함.
+//		id 에 해당하는 덱의 이름을 타입에 맞는 색으로 출력함.
+//		id 에 해당하는 덱이 없으면 작동 안해야됨
 //	
 //	리턴
 //		-1 : 해당 id 가 없을때
@@ -882,6 +927,197 @@ int GKD_ELO_Chart::print_color_deck_name_return_length(int _id, int _mode) {
 		break;
 	}
 	printf("%s", deck_name.c_str());
+
+	SET_COLOR(COLOR_DARK_WHITE);
+
+	if (_mode & PRINT_LENGTH_BLANK) {
+		for (i = 0; i < PRINT_BLANK_BASE - len; i++)
+			printf(" ");
+	}
+	if (_mode & PRINT_ENTER)
+		printf("\n");
+
+	return len;
+}
+
+//
+//	입력
+//		input_string : 이름을 출력할 덱의 이름
+//		_mode : & 1 == 길이만큼 스페이스를 출력할지
+//				& 2 == 스페이스 여부 이후에 \n 을 할지
+//
+//	기능
+//		_name 이 해당하는 색으로 이름을 출력함
+//		-name 이 리스트에 없어도 출력함
+//
+//	리턴
+//		-1 : 해당 타입이 없을때
+//		else : 이름의 길이
+//
+int GKD_ELO_Chart::print_color_deck_name_return_length(std::string input_string, int _mode) {
+	int id_base = 0;
+	int idx = 0;
+	if ((input_string[0] == 'G' || input_string[0] == 'g') &&
+		(input_string[1] == 'R' || input_string[1] == 'r') &&
+		(input_string[2] == 'A' || input_string[2] == 'a') &&
+		(input_string[3] == 'S' || input_string[3] == 's') &&
+		(input_string[4] == 'S' || input_string[4] == 's')) {
+		id_base = ID_BASE_GRASS;
+		input_string[0] = 'G';
+		input_string[1] = 'R';
+		input_string[2] = 'A';
+		input_string[3] = 'S';
+		input_string[4] = 'S';
+		idx = 5;
+	}
+	else if (
+		(input_string[0] == 'F' || input_string[0] == 'f') &&
+		(input_string[1] == 'I' || input_string[1] == 'i') &&
+		(input_string[2] == 'R' || input_string[2] == 'r') &&
+		(input_string[3] == 'E' || input_string[3] == 'e')) {
+		id_base = ID_BASE_FIRE;
+		input_string[0] = 'F';
+		input_string[1] = 'I';
+		input_string[2] = 'R';
+		input_string[3] = 'E';
+		idx = 4;
+	}
+	else if (
+		(input_string[0] == 'W' || input_string[0] == 'w') &&
+		(input_string[1] == 'A' || input_string[1] == 'a') &&
+		(input_string[2] == 'T' || input_string[2] == 't') &&
+		(input_string[3] == 'E' || input_string[3] == 'e') &&
+		(input_string[4] == 'R' || input_string[4] == 'r')) {
+		id_base = ID_BASE_WATER;
+		input_string[0] = 'W';
+		input_string[1] = 'A';
+		input_string[2] = 'T';
+		input_string[3] = 'E';
+		input_string[4] = 'R';
+		idx = 5;
+	}
+	else if (
+		(input_string[0] == 'L' || input_string[0] == 'l') &&
+		(input_string[1] == 'I' || input_string[1] == 'i') &&
+		(input_string[2] == 'G' || input_string[2] == 'g') &&
+		(input_string[3] == 'H' || input_string[3] == 'h') &&
+		(input_string[4] == 'T' || input_string[4] == 't') &&
+		(input_string[5] == 'N' || input_string[5] == 'n') &&
+		(input_string[6] == 'I' || input_string[6] == 'i') &&
+		(input_string[7] == 'N' || input_string[7] == 'n') &&
+		(input_string[8] == 'G' || input_string[8] == 'g')) {
+		id_base = ID_BASE_LIGHTNING;
+		input_string[0] = 'L';
+		input_string[1] = 'I';
+		input_string[2] = 'G';
+		input_string[3] = 'H';
+		input_string[4] = 'T';
+		input_string[5] = 'N';
+		input_string[6] = 'I';
+		input_string[7] = 'N';
+		input_string[8] = 'G';
+		idx = 9;
+	}
+	else if (
+		(input_string[0] == 'F' || input_string[0] == 'f') &&
+		(input_string[1] == 'I' || input_string[1] == 'i') &&
+		(input_string[2] == 'G' || input_string[2] == 'g') &&
+		(input_string[3] == 'H' || input_string[3] == 'h') &&
+		(input_string[4] == 'T' || input_string[4] == 't')) {
+		id_base = ID_BASE_FIGHT;
+		input_string[0] = 'F';
+		input_string[1] = 'I';
+		input_string[2] = 'G';
+		input_string[3] = 'H';
+		input_string[4] = 'T';
+		idx = 5;
+	}
+	else if (
+		(input_string[0] == 'P' || input_string[0] == 'p') &&
+		(input_string[1] == 'S' || input_string[1] == 's') &&
+		(input_string[2] == 'Y' || input_string[2] == 'y') &&
+		(input_string[3] == 'C' || input_string[3] == 'c') &&
+		(input_string[4] == 'H' || input_string[4] == 'h') &&
+		(input_string[5] == 'I' || input_string[5] == 'i') &&
+		(input_string[6] == 'C' || input_string[6] == 'c')) {
+		id_base = ID_BASE_PSYCHIC;
+		input_string[0] = 'P';
+		input_string[1] = 'S';
+		input_string[2] = 'Y';
+		input_string[3] = 'C';
+		input_string[4] = 'H';
+		input_string[5] = 'I';
+		input_string[6] = 'C';
+		idx = 7;
+	}
+	else if (
+		(input_string[0] == 'N' || input_string[0] == 'n') &&
+		(input_string[1] == 'O' || input_string[1] == 'o') &&
+		(input_string[2] == 'R' || input_string[2] == 'r') &&
+		(input_string[3] == 'M' || input_string[3] == 'm') &&
+		(input_string[4] == 'A' || input_string[4] == 'a') &&
+		(input_string[5] == 'L' || input_string[5] == 'l')) {
+		id_base = ID_BASE_NORMAL;
+		input_string[0] = 'N';
+		input_string[1] = 'O';
+		input_string[2] = 'R';
+		input_string[3] = 'M';
+		input_string[4] = 'A';
+		input_string[5] = 'L';
+		idx = 6;
+	}
+	else if (
+		(input_string[0] == 'B' || input_string[0] == 'b') &&
+		(input_string[1] == 'O' || input_string[1] == 'o') &&
+		(input_string[2] == 'S' || input_string[2] == 's') &&
+		(input_string[3] == 'S' || input_string[3] == 's')) {
+		id_base = ID_BASE_BOSS;
+		input_string[0] = 'B';
+		input_string[1] = 'O';
+		input_string[2] = 'S';
+		input_string[3] = 'S';
+		idx = 4;
+	}
+	else if (
+		(input_string[0] == 'N' || input_string[0] == 'n') &&
+		(input_string[1] == 'P' || input_string[1] == 'p') &&
+		(input_string[2] == 'C' || input_string[2] == 'c')) {
+		id_base = ID_BASE_NPC;
+		input_string[0] = 'N';
+		input_string[1] = 'P';
+		input_string[2] = 'C';
+		idx = 3;
+	}
+	if (input_string[idx] != '-') {
+		id_base = 0;
+	}
+	int deck_type = id_base / 1000;
+	int len = input_string.size();
+	int i = 0;
+
+	switch (deck_type) {
+	case 1:
+		SET_COLOR(COLOR_GREEN);
+		break;
+	case 2:
+		SET_COLOR(COLOR_DARK_RED);
+		break;
+	case 3:
+		SET_COLOR(COLOR_BLUE);
+		break;
+	case 4:
+		SET_COLOR(COLOR_YELLOW);
+		break;
+	case 5:
+		SET_COLOR(COLOR_DARK_YELLOW);
+		break;
+	case 6:
+		SET_COLOR(COLOR_PINK);
+		break;
+	default:
+		break;
+	}
+	printf("%s", input_string.c_str());
 
 	SET_COLOR(COLOR_DARK_WHITE);
 
@@ -945,6 +1181,38 @@ int GKD_ELO_Chart::print_color_deck_number(int _id) {
 	return deck_name.size();
 }
 
+void GKD_ELO_Chart::print_insert_new_deck_error(int _error, std::string _additional) {
+
+	if (!_error)
+		return;
+	else {
+		std::cout << _additional << " ";
+		switch (_error) {
+		case 1:
+			printf("해당 덱이 이미 존재함\n");
+			break;
+		case 21:
+			printf("DECK_DB 디렉토리로 이동을 못함\n");
+			break;
+		case 22:
+			printf("해당 덱의 디렉토리를 생성하지 못함\n");
+			break;
+		case 23:
+			printf("초기 디렉토리로 이동하지 못함\n");
+			break;
+		case 24:
+			printf("기본 파일은 만들고 초기 디렉토리로 이동하지 못함\n");
+			break;
+		case 31:
+			printf("이름에 속성이 없음\n");
+			break;
+		default:
+			printf("알 수 없는 에러\n");
+			break;
+		}
+	}
+
+}
 
 //
 //	해당 id 의 전체 score 를 리턴한다.
@@ -1107,7 +1375,7 @@ void GKD_ELO_Chart::mode_2_write_file() {
 	//	2. 전체 스코어 기록
 	//	3. 개별 스코어 기록
 	//	4. 총 전적 기록
-	//	5. 개별 전적 기록dms 4번에서 호출한다.
+	//	5. 개별 전적 기록은 4번에서 호출한다.
 	printf("write_name_list\n");
 	this->write_name_list();
 	printf("write_entire_score\n");
@@ -1116,6 +1384,7 @@ void GKD_ELO_Chart::mode_2_write_file() {
 	this->write_each_score();
 	printf("write_entire_record\n");
 	this->write_entire_record();
+	printf("write_modified_deck_name\n");
 }
 
 //	---   알파버전 완성   ---
@@ -1136,31 +1405,7 @@ void GKD_ELO_Chart::mode_3_add_deck() {
 		printf("취소합니다.\n");
 		return;
 	}
-	err = this->insert_new_deck(input_string);
-
-	switch (err) {
-	case 0:
-		//	정상작동
-		break;
-	case 1:
-		printf("(mode_3_add_deck) %s 는 이미 이름 리스트에 존재합니다\n", input_string.c_str());
-		break;
-	case 21:
-		printf("(mode_3_add_deck) %s DECK_DB 디렉토리로 이동하지 못함\n", input_string.c_str());
-		break;
-	case 22 :
-		printf("(mode_3_add_deck) %s 디렉토리를 생성하지 못함\n", input_string.c_str());
-		printf("\t혹시 이미 있는건 아닌가 확인 요망\n");
-		break;
-	case 23:
-		printf("(mode_3_add_deck) %s 초기 디렉토리로 이동하지 못함\n", input_string.c_str());
-		break;
-	case 24:
-		printf("(mode_3_add_deck) %s 기본파일 생성 후 초기 디렉토리로 이동하지 못함\n", input_string.c_str());
-		break;
-	default:
-		break;
-	}
+	this->print_insert_new_deck_error(this->insert_new_deck(input_string), "(ADD_DECK : " + input_string + ")");
 }
 
 //
@@ -1173,7 +1418,7 @@ void GKD_ELO_Chart::mode_4_get_battle() {
 	//	2. 결과를 입력받는다.
 	//		결과 오타여부를 점검해야한다.
 	//		- score, record 는 호출한 함수에서 기록한다.
-	std::string a, b, c, d;
+	std::string a, b, c, d, res_a, res_b;
 	int ret = 0;
 	int ibuf = 0;
 	int ia = 0, ib = 0;
@@ -1181,68 +1426,65 @@ void GKD_ELO_Chart::mode_4_get_battle() {
 	//	1. a 와 b 를 입력받는 부분
 	//		각각 존재 여부와 생성여부를 확인한다.
 	printf("\nMODE_4 를 실행합니다.\n\n");
+
 	printf("a 를 입력하여 주십시오 : ");
 	std::cin >> a;
-	if (a == "-1") {
+	res_a = this->find_name_with_input_string(a);
+
+	if (res_a == "-1") {
 		printf("취소합니다.\n");
 		return;
 	}
-	a = this->convert_name(a).second;
-	ret = this->list_name.isExist_name(a);
-	if (ret == false) {
-		ia = atoi(a.c_str());
-		if (this->list_name.isExist_id(ia) == false) {
-			printf("%s 는 차트에 없습니다.\n", a.c_str());
-			printf("새로 만들까요? (Y/N) : ");
-			std::cin >> c;
-			if (c[0] == 'y' || c[0] == 'Y') {
-				this->insert_new_deck(a);
-			}
-			else {
-				printf("만들지 않고 종료합니다.\n");
-				return;
-			}
-		}
+	else if (res_a == "NULL") {
+		a = this->convert_name(a).second;
+		this->print_color_deck_name_return_length(a, NULL);
+		printf(" 는 차트에 없습니다.\n");
+		printf("새로 만들까요? (Y/N) : ");
+		std::cin >> c;
+		if (c[0] == 'y' || c[0] == 'Y')
+			this->print_insert_new_deck_error(this->insert_new_deck(a), "(MODE_4_a) : ");
 		else {
-			a = this->list_name.find_name(ia);
-		}		
+			printf("만들지 않고 종료합니다.\n");
+			return;
+		}
 	}
+	else
+		a = res_a;
+
 
 	printf("b 를 입력하여 주십시오 : ");
 	std::cin >> b;
-	if (b == "-1") {
+	res_b = this->find_name_with_input_string(b);
+
+	if (res_b == "-1") {
 		printf("취소합니다.\n");
 		return;
 	}
-	b = this->convert_name(b).second;
-	ret = this->list_name.isExist_name(b);
-	if (ret == false) {
-		ib = atoi(b.c_str());
-		if (this->list_name.isExist_id(ib) == false) {
-			printf("%s 는 차트에 없습니다.\n", b.c_str());
-			printf("새로 만들까요? (Y/N) : ");
-			std::cin >> c;
-			if (c[0] == 'y' || c[0] == 'Y') {
-				this->insert_new_deck(b);
-			}
-			else {
-				printf("만들지 않고 종료합니다.\n");
-				return;
-			}
+	else if (res_b == "NULL") {
+		b = this->convert_name(b).second;
+		this->print_color_deck_name_return_length(b, NULL);
+		printf(" 는 차트에 없습니다.\n");
+		printf("새로 만들까요? (Y/N) : ");
+		std::cin >> c;
+		if (c[0] == 'y' || c[0] == 'Y') {
+			this->print_insert_new_deck_error(this->insert_new_deck(b), "(MODE_4_b) : ");
 		}
 		else {
-			b = this->list_name.find_name(ib);
+			printf("만들지 않고 종료합니다.\n");
+			return;
 		}
 	}
+	else
+		b = res_b;
 
 	//	2. 결과를 입력받고 battle 을 실행하는 부분
 	int how_much = 0;
 
 	printf("\n");
 	printf("\na : ");
-	this->print_color_deck_name_return_length(ia, PRINT_ENTER);
+	this->print_color_deck_name_return_length(a, PRINT_ENTER);
 	printf("b : ");
-	this->print_color_deck_name_return_length(ib, PRINT_ENTER);
+	this->print_color_deck_name_return_length(b, PRINT_ENTER);
 input_result:
 	printf("\n누가 이겼나요? (a or b or draw or -1) : ");
 	std::cin >> c;
@@ -1288,11 +1530,51 @@ input_result:
 	}
 }
 
-
+//
+//	기능 : 덱의 이름을 바꾼다.
+//	- GKD_ELO_Chart.list_name 에 있는 이름을 바꾼다.
+//	- name_list.txt 에 기록될 내용은 mode_2_write 에서 호출되는 write_name_list 에서 반영된다.
+//	- base_info.txt 에 기록될 내용은 '이름 수정 큐' 에 저장된 원소들을 pop 하면서 반영한다.
+//
+//	1. 이름을 입력받고 검사한다.
+//	2. 바꿀 이름을 입력하고 검사한다.
+//	3. Chart.list_name 에 수정된 이름을 반영한다.
+//		- name_list.txt 에 기록할 목적
+//	4. 해당하는 row 에 수정된 이름을 반영한다.
+//	5. 수정된 기록 queue 에 수정사항을 저장한다.
+//		- base_info.txt 에 기록할 목적
+//
 void GKD_ELO_Chart::mode_5_modify_name() {
 	printf("Mode 5 : modify_deck 을 실행합니다.\n");
 	printf("\n이름만 바꿀 수 있습니다.\n");
 	printf("아직 구현이 안되었습니다.\n");
+
+	std::string input_string;
+	int deck_id = 0, ret = 0;
+
+	//
+	//	1. 이름을 입력받고 검사한다.
+	//
+	printf("원래 이름이나 ID 를 입력하시오. \n");
+	std::cin >> input_string;
+	if (input_string == "-1") {
+		printf("취소합니다.\n");
+		return;
+	}
+	input_string = this->convert_name(input_string).second;
+	std::cout << "Result is " << input_string << std::endl;
+	ret = this->list_name.isExist_name(input_string);
+	if (ret == false) {
+		deck_id = atoi(input_string.c_str());
+		if (this->list_name.isExist_id(deck_id) == false) {
+			printf("%s 는 차트에 없습니다.\n", input_string.c_str());
+		}
+		else {
+			input_string = this->list_name.find_name(deck_id);
+		}
+	}
+
+
 }
 
 //
@@ -1368,7 +1650,7 @@ void GKD_ELO_Chart::mode_34_print_all_row_elo() {
 //
 void GKD_ELO_Chart::mode_41_print_id_all_col() {
 	printf("\nMODE_41 을 실행합니다.\n");
-	std::string input_string;
+	std::string input_string, res_input;
 	int id = 0;
 	double expected_future = 0;
 	double total_win_rate = 0;
@@ -1376,16 +1658,20 @@ void GKD_ELO_Chart::mode_41_print_id_all_col() {
 	printf("어느 덱을 보시겠습니까? : ");
 	std::cin >> input_string;
 	input_string = this->convert_name(input_string).second;
-	if (this->list_name.isExist_name(input_string) == false) {
-		id = atoi(input_string.c_str());
-		
-		if (this->list_name.isExist_id(id) == false) {
-			printf("%d 는 리스트에 없습니다.\n", id);
-			return;
-		}
 
-		input_string = this->list_name.find_name(id);
+	res_input = this->find_name_with_input_string(input_string);
+	if (res_input == "-1") {
+		printf("취소합니다. \n");
+		return;
 	}
+	else if (res_input == NULL_STRING) {
+		printf("%s 는 리스트에 없습니다. \n", input_string.c_str());
+		return;
+	}
+	else
+		input_string = res_input;
+
+
 	id = this->list_name.find_id(input_string);
 	total_win_rate = this->get_win_rate(id)/100.0;
 
@@ -1518,10 +1804,7 @@ void GKD_ELO_Chart::mode_51_print_grouping() {
 	auto it = this->list_name.name_list.begin();
 
 	while (it != this->list_name.name_list.end()) {
-		entire_array[i] = (*it);
-
-		it++;
-		i++;
+		entire_array[i++] = (*it++);
 	}
 
 	//	덱을 섞는다

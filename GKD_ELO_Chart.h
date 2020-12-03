@@ -28,6 +28,7 @@ public :
 	void write_entire_score();
 	void write_each_record(NODE_Record_Entire);
 	void write_entire_record();
+	void write_modified_deck_name();
 	void write_record_node(FILE*, NODE_Record_Entire);
 	void set_t_zero();
 	int insert_new_deck(std::string);
@@ -36,8 +37,11 @@ public :
 
 	std::pair<int, std::string> convert_name(std::string);	
 	std::string find_name_with_id(int);
+	std::string find_name_with_input_string(std::string);
 	int print_color_deck_name_return_length(int, int);
+	int print_color_deck_name_return_length(std::string, int);
 	int print_color_deck_number(int);
+	void print_insert_new_deck_error(int, std::string);
 	std::tuple<int*, int, int*> return_total_score_id(int);
 	std::tuple<int*, int, int*> get_total_score_id(int);
 	double return_win_rate(int);

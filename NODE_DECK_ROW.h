@@ -26,5 +26,7 @@ public :
 	int insert_new_column(int);	//	새로 추가할 때 사용한다.
 
 	void insert_deck_form(int[CNT_CARD]);
+
+
 };
 
