@@ -359,13 +359,72 @@ void GKD_ELO_Chart::write_entire_record() {
 	_chdir("../");
 }
 
+//
+//	기본 폴더에서 시작한다.
+//	각 덱의 개별 _baseinfo.txt 에 이름 변경 내역을 기록한다.
+//	전체 이름에는 write_name_list 에서 기록된다.
+//
 void GKD_ELO_Chart::write_modified_deck_name() {
 
+	FILE *fp = nullptr;
+	std::list<NODE_Modified_Deck>::iterator it;
+	int id = 0;
+	std::string name;
+	char sbuf[32];
 
 	if (_chdir(STRING_DIR_DB)) {
 		printf("이름 바꾼거 적는데 Database 폴더를 인식 못하네\n");
 		return;
 	}
+
+	if (chdir(STRING_DIR_DECK_DB)) {
+		printf("each_score : deck_db 폴더가 있는데 왜 이동을 못하니\n");
+		return;
+	}
+
+	it = this->modified_list.begin();
+
+	while (it != this->modified_list.end()) {
+		id = it->id;
+		name = it->new_name;
+
+		std::string si = itoa(id, sbuf, 10);
+
+		//
+		//	디렉토리 확인
+		//
+		if (chdir(si.c_str())) {
+			printf("each_score : %d 폴더가 있는데 왜 이동을 못하니\n", id);
+			//	개별 디렉토리로 이동하지 못했으므로 이전 디렉토리로 이동하지 않는다.
+			it++;
+			continue;
+		}
+
+		//
+		//	base info 확인
+		//
+		int tlen = this->list_name.find_name(id).length();
+		fp = fopen((si + "_baseinfo.txt").c_str(), "a");
+
+		if (fp == nullptr) {
+			printf("each_score : (%d, %s) baseinfo 파일이 만들어지지 않음\n", id, name.c_str());
+			//	Deck_DB 폴더로 이동해야한다.
+			_chdir("../");
+			it++;
+			continue;
+		}
+
+		fprintf(fp, "NAME    %s", name.c_str());
+		for (int k = 0; k < 24 - tlen; k++)
+			fprintf(fp, " ");
+		fprintf(fp, " %d-%d-%d %d:%d\n", it->birth.year, it->birth.month, it->birth.day, it->birth.hour, it->birth.min);
+
+		fclose(fp);
+
+		_chdir("../");	//	DECK_DB 로 이동한다.
+		it++;
+	}
+	_chdir("../../");	//	기본 폴더로 이동한다.
 }
 
 //	파일 열기, 닫기는 여기서 안한다.
@@ -439,9 +498,9 @@ int GKD_ELO_Chart::insert_new_deck(std::string input_string) {
 	ITERATOR_NAME it = this->list_name.name_list.begin();
 
 	while (it != this->list_name.name_list.end()) {
-		if (it->first / 1000 == id_base / 1000)
+		if (GET_DECK_TYPE(it->first) == GET_DECK_TYPE(id_base))
 			id_idx++;
-		if (it->first / 1000 > id_base / 1000)
+		if (GET_DECK_TYPE(it->first) > GET_DECK_TYPE(id_base))
 			break;
 		it++;
 	}
@@ -466,8 +525,7 @@ int GKD_ELO_Chart::insert_new_deck(std::string input_string) {
 	//	5.2 기존의 ID 들에 해당하는 col들을 전부 입력한다. (NAME_LIST 참고하자)
 	//	5.3 이름 리스트에 이름을 추가한다.
 	//	6 모든 ROW 에 새로운 col 을 입력한다.
-	
-	
+
 	if (this->list_name.name_list.size() == 0) {
 		//	기존에 노드가 없었을 경우
 		this->deck_row[id].insert_new_column(id);	//	5.1, 6 현재 node_row 에 현재 col을 추가한다.
@@ -895,7 +953,7 @@ std::string GKD_ELO_Chart::find_name_with_input_string(std::string _input_string
 //
 int GKD_ELO_Chart::print_color_deck_name_return_length(int _id, int _mode) {
 	std::string deck_name = this->find_name_with_id(_id);
-	int deck_type = _id / 1000;
+	int deck_type = GET_DECK_TYPE(_id);
 	int len = deck_name.size();
 	int i = 0;
 
@@ -1091,7 +1149,7 @@ int GKD_ELO_Chart::print_color_deck_name_return_length(std::string input_string,
 	if (input_string[idx] != '-') {
 		id_base = 0;
 	}
-	int deck_type = id_base / 1000;
+	int deck_type = GET_DECK_TYPE(id_base);
 	int len = input_string.size();
 	int i = 0;
 
@@ -1150,7 +1208,7 @@ int GKD_ELO_Chart::print_color_deck_number(int _id) {
 		return -1;
 	}
 
-	int deck_type = _id / 1000;
+	int deck_type = GET_DECK_TYPE(_id);
 
 	switch (deck_type) {
 	case 1:
@@ -1318,7 +1376,6 @@ int GKD_ELO_Chart::get_tot_draw(int id) {
 }
 
 
-
 //	완
 //	전체 스코어 파일 어떻게 구성할건지 생각해야한다.
 //	작동 순서
@@ -1378,13 +1435,18 @@ void GKD_ELO_Chart::mode_2_write_file() {
 	//	5. 개별 전적 기록은 4번에서 호출한다.
 	printf("write_name_list\n");
 	this->write_name_list();
+
 	printf("write_entire_score\n");
 	this->write_entire_score();
+
 	printf("write_each_score\n");
 	this->write_each_score();
+
 	printf("write_entire_record\n");
 	this->write_entire_record();
+
 	printf("write_modified_deck_name\n");
+	this->write_modified_deck_name();
 }
 
 //	---   알파버전 완성   ---
@@ -1435,7 +1497,7 @@ void GKD_ELO_Chart::mode_4_get_battle() {
 		printf("취소합니다.\n");
 		return;
 	}
-	else if (res_a == "NULL") {
+	else if (res_a == NULL_STRING) {
 		a = this->convert_name(a).second;
 		this->print_color_deck_name_return_length(a, NULL);
 		printf(" 는 차트에 없습니다.\n");
@@ -1460,7 +1522,7 @@ void GKD_ELO_Chart::mode_4_get_battle() {
 		printf("취소합니다.\n");
 		return;
 	}
-	else if (res_b == "NULL") {
+	else if (res_b == NULL_STRING) {
 		b = this->convert_name(b).second;
 		this->print_color_deck_name_return_length(b, NULL);
 		printf(" 는 차트에 없습니다.\n");
@@ -1545,36 +1607,76 @@ input_result:
 //		- base_info.txt 에 기록할 목적
 //
 void GKD_ELO_Chart::mode_5_modify_name() {
+	std::string input_string, res_string, name_before, name_after;
+	int deck_id = 0, ret = 0, after_id = 0;
+	std::pair<int, std::string> res_pair;
+	
+
 	printf("Mode 5 : modify_deck 을 실행합니다.\n");
 	printf("\n이름만 바꿀 수 있습니다.\n");
-	printf("아직 구현이 안되었습니다.\n");
-
-	std::string input_string;
-	int deck_id = 0, ret = 0;
 
 	//
 	//	1. 이름을 입력받고 검사한다.
 	//
-	printf("원래 이름이나 ID 를 입력하시오. \n");
+mode_5_1:
+	printf("원래 이름이나 ID 를 입력하시오. (-1 : 취소)\n");
 	std::cin >> input_string;
-	if (input_string == "-1") {
-		printf("취소합니다.\n");
+	res_string = this->find_name_with_input_string(input_string);
+
+	if (res_string == "-1")
 		return;
+	else if (res_string == NULL_STRING) {
+		printf("그런 이름은 존재하지 않습니다. \n");
+		goto mode_5_1;
 	}
-	input_string = this->convert_name(input_string).second;
-	std::cout << "Result is " << input_string << std::endl;
-	ret = this->list_name.isExist_name(input_string);
-	if (ret == false) {
-		deck_id = atoi(input_string.c_str());
-		if (this->list_name.isExist_id(deck_id) == false) {
-			printf("%s 는 차트에 없습니다.\n", input_string.c_str());
-		}
-		else {
-			input_string = this->list_name.find_name(deck_id);
-		}
+	name_before = res_string;
+	deck_id = this->list_name.find_id(name_before);
+
+	//
+	//	2. 바꿀 이름을 입력하고 검사한다.
+	//	이름이 타당해야 하며, 타입이 달라서는 안된다.
+	//
+mode_5_2:
+	printf("ID : ");
+	this->print_color_deck_number(deck_id);
+	printf(", NAME : ");
+	this->print_color_deck_name_return_length(name_before, NULL);
+	printf(" 의 이름을 바꿉니다.\n");
+	printf("바꿀 이름을 입력하시오 (-1 : 취소)\n");
+
+	std::cin >> input_string;
+	if (input_string == "-1")
+		return;
+
+	res_pair = this->convert_name(input_string);
+	if (res_pair.first == 0 || GET_DECK_TYPE(res_pair.first) != GET_DECK_TYPE(deck_id)) {
+		//	올바른 이름을 입력해도
+		//	ID 는 deck_id 와 다른 값으로 리턴한다.
+		printf("이름이 잘못되었습니다. \n\n");
+		goto mode_5_2;
 	}
+	name_after = res_pair.second;
 
 
+	//	3. Chart.list_name 에 수정된 이름을 반영한다.
+	//		- name_list.txt 에 기록할 목적
+	//	4. 해당하는 row 에 수정된 이름을 반영한다.
+
+	this->list_name.modify_name(name_before, name_after);
+	this->deck_row[deck_id].deck_name = name_after;
+
+
+	//	5. 수정된 기록 queue 에 수정사항을 저장한다.
+	//		- base_info.txt 에 기록할 목적
+
+	NODE_Modified_Deck node_modified(deck_id, name_after);
+	this->modified_list.push_back(node_modified);
+
+	printf("\t");
+	this->print_color_deck_name_return_length(name_before, NULL);
+	printf(" 이 ");
+	this->print_color_deck_name_return_length(name_after, NULL);
+	printf(" 으로 변경이 완료되었습니다.\n");
 }
 
 //

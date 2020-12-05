@@ -101,3 +101,27 @@ bool List_Name::isExist_name(string name) {
 	}
 	return false;
 }
+
+//
+//	_before : 리스트에 존재하는지 여기에서 다시 확인을 한다.
+//	_after : 타당한 이름인지 여기서는 확인하지 앟ㄴ는다.
+//
+bool List_Name::modify_name(string _before, string _after) {
+	list<pair<int, string>>::iterator it;
+
+
+	it = this->name_list.begin();
+
+	while (it != this->name_list.end()) {
+		if (it->second == _before)
+			break;
+		it++;
+	}
+
+	if (it == this->name_list.end())
+		return false;
+
+	it->second = _after;
+
+	return true;
+}

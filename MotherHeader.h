@@ -43,6 +43,9 @@ const double GKD_ELO_DELTA_PLUS[] = {0, 0.1, 0.2, 0.3, 0.5, 0.8, 1.2};
 #define ID_BASE_BOSS		8000
 #define ID_BASE_NPC			9000
 
+#define GET_TYPE_DECK(a)	((int)(a/1000))
+#define GET_DECK_TYPE(a)	GET_TYPE_DECK(a)
+
 #define ITERATOR_NAME		std::list<std::pair<int, std::string>>::iterator
 #define ITERATOR_RECORD		std::list<NODE_Record_Entire>::iterator
 

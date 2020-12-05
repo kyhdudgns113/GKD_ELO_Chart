@@ -7,6 +7,7 @@
 #include "List_Name.h"
 #include "NODE_DECK_ROW.h"
 #include "NODE_CARD_Score.h"
+#include "NODE_Modified_Deck.h"
 
 
 class GKD_ELO_Chart {
@@ -18,6 +19,7 @@ public :
 	NODE_CARD_Score card_score[CNT_CARD][CNT_CARD];
 	std::string card_name[CNT_CARD];
 	std::list<NODE_Record_Entire> record_list;	//	Tail 에 넣어야 한다.
+	std::list<NODE_Modified_Deck> modified_list;
 
 	GKD_ELO_Chart();
 	~GKD_ELO_Chart();
