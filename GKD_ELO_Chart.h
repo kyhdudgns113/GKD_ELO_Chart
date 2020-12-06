@@ -36,6 +36,8 @@ public :
 	int insert_new_deck(std::string);
 	int insert_saved_deck(int, std::string);
 	int get_battle(std::string, std::string, int);
+	std::string if_exist_convert_or_create(std::string _input_string);
+	std::pair<std::string, int> input_result_and_get_battle(std::string _a, std::string _b);
 
 	std::pair<int, std::string> convert_name(std::string);	
 	std::string find_name_with_id(int);
@@ -43,7 +45,8 @@ public :
 	int print_color_deck_name_return_length(int, int);
 	int print_color_deck_name_return_length(std::string, int);
 	int print_color_deck_number(int);
-	void print_insert_new_deck_error(int, std::string);
+	int print_insert_new_deck_error(int, std::string);
+
 	std::tuple<int*, int, int*> return_total_score_id(int);
 	std::tuple<int*, int, int*> get_total_score_id(int);
 	double return_win_rate(int);

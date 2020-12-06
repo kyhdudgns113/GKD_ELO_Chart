@@ -1,8 +1,8 @@
 ID	2003
 NAME	FIRE-Windy
-ELO	2286.860159
+ELO	2294.071719
 					  W6  W5  W4  W3  W2  W1   D  L1  L2  L3  L4  L5  L6
-	Total				   4  15  13   5   3   3   0   0   1   1   0   5   0
+	Total				   5  17  13   5   3   4   0   0   1   1   1   5   0
 1001	GRASS-DrainVenu                    0   0   0   0   0   0   0   0   0   0   0   0   0
 1002	GRASS-GoldBok                      0   1   4   0   0   0   0   0   0   0   0   0   0
 1003	GRASS-NidoKing                     2   3   0   0   0   0   0   0   0   0   0   0   0
@@ -16,5 +16,5 @@ ELO	2286.860159
 5002	FIGHT-Wiggle                       0   0   0   0   0   0   0   0   0   0   0   0   0
 5003	FIGHT-Bone                         0   1   3   0   0   1   0   0   0   0   0   0   0
 6001	PSYCHIC-Nasi                       0   0   0   0   0   0   0   0   0   0   0   0   0
-6002	PSYCHIC-AntiCarry                  0   0   0   0   0   0   0   0   0   0   0   0   0
+6002	PSYCHIC-AntiCarry                  1   2   0   0   0   1   0   0   0   0   1   0   0
 6003	PSYCHIC-Abra                       0   2   1   1   0   1   0   0   0   0   0   0   0

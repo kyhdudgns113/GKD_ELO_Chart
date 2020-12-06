@@ -701,9 +701,9 @@ int GKD_ELO_Chart::get_battle(std::string win, std::string lose, int how_much) {
 	this->print_color_deck_number(idw);
 	printf(" : %3d 승 ", twin);
 	this->print_color_deck_name_return_length(idw, NULL);
-	printf(" : %.2lf -> %.2lf\n", ew, ew + delta_elo);
+	printf(" : %.2lf -> %.2lf\n\n", ew, ew + delta_elo);
 
-	printf(" 무승부   %3d 무\n", tdraw);
+	printf(" 무승부   %3d 무\n\n", tdraw);
 
 	printf("패: ");
 	this->print_color_deck_number(idl);
@@ -753,6 +753,114 @@ int GKD_ELO_Chart::get_battle(std::string win, std::string lose, int how_much) {
 	return 0;
 }
 
+//
+//	입력
+//		_input_string : get_battle 에서의 입력 문자열
+//
+//	기능
+//		-	-1 인지 검사
+//		-	리스트에 없다면 새로 만들지 확인
+//			-	오류 검사
+//		-	에러 발생시 출력
+//
+//	출력
+//		-1 : 입력이 -1일떄
+//		NULL_STRING : 생성을 안하기로 하거나, 생성시 에러가 발생했을때
+//		그 외 : convert 된 _input_string
+//
+std::string GKD_ELO_Chart::if_exist_convert_or_create(std::string _input_string) {
+
+	std::string res = this->find_name_with_input_string(_input_string);
+	char c[32];
+
+	if (res == "-1") {
+		printf("취소합니다.\n");
+		return res;
+	}
+	else if (res == NULL_STRING) {
+		res = this->convert_name(_input_string).second;
+		this->print_color_deck_name_return_length(res, NULL);
+		printf(" 는 차트에 없습니다.\n");
+		printf("새로 만들까요? (Y/N) : ");
+		std::cin >> c;
+		if (c[0] == 'y' || c[0] == 'Y') {
+			if (this->print_insert_new_deck_error(this->insert_new_deck(res), "(MODE_4_a) : "))
+				return NULL_STRING;
+			else
+				return res;
+		}
+		else {
+			printf("만들지 않고 종료합니다.\n");
+			return NULL_STRING;
+		}
+	}
+	else
+		return res;
+}
+
+//
+//	입력
+//		_a, _b : a 와 b
+//
+//	기능
+//		- a 와 b 의 결과를 입력받고 get_battle 을 수행
+//		- 오류 검사 여기서함
+//		- 에러메시지 여기서 출력함
+//
+//	출력
+//		- <string 누가 이겼는지, int 얼마나 이겼는지>
+//		- <"-1", -1> : 에러 났을때
+//
+std::pair<std::string, int> GKD_ELO_Chart::input_result_and_get_battle(std::string _a, std::string _b) {
+
+	int ibuf = 0;
+	std::string a = _a, b = _b, c;
+input_result_and_get_battle_input_result:
+	printf("\n누가 이겼나요? (a or b or draw or -1) : ");
+	std::cin >> c;
+
+	if (c[0] == 'a' || c[0] == 'A') {
+		printf("\n얼마나 차이가 나나요? : ");
+	input_result_and_get_battle_win_a:
+		scanf("%d", &ibuf);
+		if (ibuf == -1) {
+			printf("취소합니다\n");
+			return std::pair<std::string, int>("-1", -1);
+		}
+		else if (ibuf < 1 || ibuf > 6) {
+			printf("잘못된 수를 입력하였습니다. 다시 입력하여 주십시오. : ");
+			goto input_result_and_get_battle_win_a;
+		}
+		this->get_battle(a, b, ibuf);
+	}
+	else if (c[0] == 'b' || c[0] == 'B') {
+		printf("얼마나 차이가 나나요? : ");
+	input_result_and_get_battle_win_b:
+		scanf("%d", &ibuf);
+		if (ibuf == -1) {
+			printf("취소합니다\n");
+			return std::pair<std::string, int>("-1", -1);
+		}
+		else if (ibuf < 1 || ibuf > 6) {
+			printf("잘못된 수를 입력하였습니다. 다시 입력하여 주십시오. : ");
+			goto input_result_and_get_battle_win_b;
+		}
+		this->get_battle(b, a, ibuf);
+	}
+	else if (c == "-1") {
+		printf("취소합니다.\n");
+		return std::pair<std::string, int>("-1", -1);
+	}
+	else if (c[0] == 'd' || c[0] == 'D') {
+		this->get_battle(a, b, 0);
+	}
+	else {
+		printf("잘못된 결과를 입력하였습니다. 다시 입력하여 주십시오.\n");
+		goto input_result_and_get_battle_input_result;
+	}
+
+	return std::pair<std::string, int>(c, ibuf);
+}
 
 
 //	(완)
@@ -1239,10 +1347,22 @@ int GKD_ELO_Chart::print_color_deck_number(int _id) {
 	return deck_name.size();
 }
 
-void GKD_ELO_Chart::print_insert_new_deck_error(int _error, std::string _additional) {
+//
+//	입력
+//		-	_error : Insert_new_deck 의 에러번호
+//		-	_additional : 에러메시지 직전에 출력할 메시지
+//
+//	기능
+//		-	_additional 을 출력한다.
+//		-	Insert_new_deck 의 _error 에 해당하는 메시지를 출력한다.
+//
+//	리턴
+//		-	_error
+//
+int GKD_ELO_Chart::print_insert_new_deck_error(int _error, std::string _additional) {
 
 	if (!_error)
-		return;
+		return _error;
 	else {
 		std::cout << _additional << " ";
 		switch (_error) {
@@ -1269,7 +1389,7 @@ void GKD_ELO_Chart::print_insert_new_deck_error(int _error, std::string _additio
 			break;
 		}
 	}
-
+	return _error;
 }
 
 //
@@ -1471,16 +1591,16 @@ void GKD_ELO_Chart::mode_3_add_deck() {
 }
 
 //
-//	2,3,4 를 어떻게 묶을지 생각해야 한다.
+//	1. a 와 b 를 입력받는다.
+//		id, name 어떤걸로 입력해도 된다.
+//		없으면 생성할지 여부를 물어본다.
+//	2. 결과를 입력받는다.
+//		결과 오타여부를 점검해야한다.
+//		- score, record 는 호출한 함수에서 기록한다.
 //
 void GKD_ELO_Chart::mode_4_get_battle() {
-	//	1. a 와 b 를 입력받는다.
-	//		id, name 어떤걸로 입력해도 된다.
-	//		없으면 생성할지 여부를 물어본다.
-	//	2. 결과를 입력받는다.
-	//		결과 오타여부를 점검해야한다.
-	//		- score, record 는 호출한 함수에서 기록한다.
-	std::string a, b, c, d, res_a, res_b;
+	
+	std::string a, b, c, d;
 	int ret = 0;
 	int ibuf = 0;
 	int ia = 0, ib = 0;
@@ -1491,53 +1611,15 @@ void GKD_ELO_Chart::mode_4_get_battle() {
 
 	printf("a 를 입력하여 주십시오 : ");
 	std::cin >> a;
-	res_a = this->find_name_with_input_string(a);
-
-	if (res_a == "-1") {
-		printf("취소합니다.\n");
+	a = this->if_exist_convert_or_create(a);
+	if (a == "-1" || a == NULL_STRING)
 		return;
-	}
-	else if (res_a == NULL_STRING) {
-		a = this->convert_name(a).second;
-		this->print_color_deck_name_return_length(a, NULL);
-		printf(" 는 차트에 없습니다.\n");
-		printf("새로 만들까요? (Y/N) : ");
-		std::cin >> c;
-		if (c[0] == 'y' || c[0] == 'Y')
-			this->print_insert_new_deck_error(this->insert_new_deck(a), "(MODE_4_a) : ");
-		else {
-			printf("만들지 않고 종료합니다.\n");
-			return;
-		}
-	}
-	else
-		a = res_a;
-
 
 	printf("b 를 입력하여 주십시오 : ");
 	std::cin >> b;
-	res_b = this->find_name_with_input_string(b);
-
-	if (res_b == "-1") {
-		printf("취소합니다.\n");
+	b = this->if_exist_convert_or_create(b);
+	if (b == "-1" || b == NULL_STRING)
 		return;
-	}
-	else if (res_b == NULL_STRING) {
-		b = this->convert_name(b).second;
-		this->print_color_deck_name_return_length(b, NULL);
-		printf(" 는 차트에 없습니다.\n");
-		printf("새로 만들까요? (Y/N) : ");
-		std::cin >> c;
-		if (c[0] == 'y' || c[0] == 'Y') {
-			this->print_insert_new_deck_error(this->insert_new_deck(b), "(MODE_4_b) : ");
-		}
-		else {
-			printf("만들지 않고 종료합니다.\n");
-			return;
-		}
-	}
-	else
-		b = res_b;
 
 	//	2. 결과를 입력받고 battle 을 실행하는 부분
 	int how_much = 0;
@@ -1547,49 +1629,8 @@ void GKD_ELO_Chart::mode_4_get_battle() {
 	this->print_color_deck_name_return_length(a, PRINT_ENTER);
 	printf("b : ");
 	this->print_color_deck_name_return_length(b, PRINT_ENTER);
-input_result:
-	printf("\n누가 이겼나요? (a or b or draw or -1) : ");
-	std::cin >> c;
-	
-	if (c[0] == 'a' || c[0] == 'A') {
-		printf("\n얼마나 차이가 나나요? : ");
-	win_a:
-		scanf("%d", &ibuf);
-		if (ibuf == -1) {
-			printf("취소합니다\n");
-			return;
-		}
-		else if (ibuf < 1 || ibuf > 6) {
-			printf("잘못된 수를 입력하였습니다. 다시 입력하여 주십시오. : ");
-			goto win_a;
-		}
-		this->get_battle(a, b, ibuf);
-	}
-	else if (c[0] == 'b' || c[0] == 'B') {
-		printf("얼마나 차이가 나나요? : ");
-	win_b:
-		scanf("%d", &ibuf);
-		if (ibuf == -1) {
-			printf("취소합니다\n");
-			return;
-		}
-		else if (ibuf < 1 || ibuf > 6) {
-			printf("잘못된 수를 입력하였습니다. 다시 입력하여 주십시오. : ");
-			goto win_b;
-		}
-		this->get_battle(b, a, ibuf);
-	}
-	else if (c == "-1") {
-		printf("취소합니다.\n");
-		return;
-	}
-	else if(c[0] == 'd' || c[0] == 'D'){
-		this->get_battle(a, b, 0);
-	}
-	else {
-		printf("잘못된 결과를 입력하였습니다. 다시 입력하여 주십시오.\n");
-		goto input_result;
-	}
+
+	std::pair<std::string, int> result_battle = this->input_result_and_get_battle(a, b);
 }
 
 //
