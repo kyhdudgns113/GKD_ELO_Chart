@@ -1,9 +1,9 @@
 ID	5003
 NAME	FIGHT-Bone
-ELO	1830.619612
+ELO	1802.172798
 					  W6  W5  W4  W3  W2  W1   D  L1  L2  L3  L4  L5  L6
-	Total				   4   1   0   1   0   0   0   3   1   1   7   9   8
-1001	GRASS-DrainVenu                    0   0   0   0   0   0   0   0   0   0   0   0   0
+	Total				   4   1   0   2   0   0   0   3   1   1   9  10   9
+1001	GRASS-DrainVenu                    0   0   0   1   0   0   0   0   0   0   2   1   1
 1002	GRASS-GoldBok                      0   0   0   0   0   0   0   1   0   0   0   0   4
 1003	GRASS-NidoKing                     0   0   0   0   0   0   0   0   0   0   0   0   0
 2001	FIRE-Ninetail                      0   0   0   0   0   0   0   0   0   1   0   3   1

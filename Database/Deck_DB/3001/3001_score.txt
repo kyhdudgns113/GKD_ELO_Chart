@@ -1,9 +1,9 @@
 ID	3001
 NAME	WATER-EnergyBurn
-ELO	2096.938921
+ELO	2117.654841
 					  W6  W5  W4  W3  W2  W1   D  L1  L2  L3  L4  L5  L6
-	Total				   8  17   8   6   2   1   0   1   2   1   6  11   7
-1001	GRASS-DrainVenu                    1   0   0   1   0   0   0   0   0   0   1   1   1
+	Total				   9  18   8   8   2   1   0   1   2   1   6  11   8
+1001	GRASS-DrainVenu                    2   1   0   3   0   0   0   0   0   0   1   1   2
 1002	GRASS-GoldBok                      3   2   1   1   0   0   0   0   0   0   1   1   1
 1003	GRASS-NidoKing                     0   0   0   0   0   0   0   0   0   0   0   0   0
 2001	FIRE-Ninetail                      1   2   0   1   0   0   0   1   0   1   1   1   2
