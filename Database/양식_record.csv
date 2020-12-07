@@ -1,0 +1,2 @@
+Year,Month,Date,Hour,Minute,WinerID,LoserID,Result,WinnerWin,Draw,LoserWin,Before_Winner,Before_Loser,Delta,After_Winner,After_Loser
+2020,11,4,2,42,1002,1001,5,1,0,0,2000,2000,10.5,2010.5,1989.5

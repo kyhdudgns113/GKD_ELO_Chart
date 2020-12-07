@@ -1,0 +1,51 @@
+#include "NODE_DECK_ROW.h"
+#include <time.h>
+
+using namespace std;
+
+NODE_DECK_ROW::NODE_DECK_ROW() {
+	this->deck_name = NULL_STRING;
+	this->id = 0;
+	this->elo = GKD_ELO_BASE;
+	for (int i = 0; i < CNT_CARD; i++)
+		this->form[i] = 0;
+}
+
+NODE_DECK_ROW::NODE_DECK_ROW(int id, string name) {
+	this->id = id;
+	this->deck_name = name;
+	this->elo = GKD_ELO_BASE;
+	for (int i = 0; i < CNT_CARD; i++)
+		this->form[i] = 0;
+}
+
+NODE_DECK_ROW::~NODE_DECK_ROW() {}
+
+
+//
+//	win, draw, lose 정보를 받아온다.
+//	scoremap 의 크기를 리턴한다.
+//
+int NODE_DECK_ROW::insert_column(int id, int win[], int draw, int lose[]) {
+
+	this->score_map[id].set_score(win, draw, lose);
+	return this->score_map.size();
+}
+
+//
+//	입력 : id
+//	출력 : 현재 리스트에 있는 이름의 수
+//	기능 : 자신 vs id 에 해당하는 column node 를 추가한다.
+//		   ID 검증은 GKD_ELO_Chart 에서 한다.
+//		   - ID 를 확인하는 순간 노드가 만들어지기때문
+//
+int NODE_DECK_ROW::insert_new_column(int id) {
+	this->score_map[id].set_zero();
+
+	return this->score_map.size();
+}
+
+void NODE_DECK_ROW::insert_deck_form(int info[CNT_CARD]) {
+	for (int i = 0; i < CNT_CARD; i++)
+		this->form[i] = info[i];
+}

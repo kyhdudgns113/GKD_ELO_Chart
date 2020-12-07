@@ -1,0 +1,16 @@
+1001    GRASS-DrainVenu
+1002    GRASS-GoldBok
+1003    GRASS-NidoKing
+2001    FIRE-Ninetail
+2002    FIRE-Charizard
+2003    FIRE-Windy
+3001    WATER-EnergyBurn
+3002    WATER-Blast
+4001    LIGHTNING-Zapdo
+4002    LIGHTNING-Chain
+5001    FIGHT-Monkey
+5002    FIGHT-Wiggle
+5003    FIGHT-Bone
+6001    PSYCHIC-Nasi
+6002    PSYCHIC-AntiCarry
+6003    PSYCHIC-Abra
