@@ -60,18 +60,21 @@ public :
 	int get_tot_lose(int);
 	int return_tot_draw(int);
 	int get_tot_draw(int);
+	int get_size_include_npc();
+	int get_size_exclude_npc();
 
 	void mode_1_read_file();
 	void mode_2_write_file();
 	void mode_3_add_deck();
 	void mode_4_get_battle();
 	void mode_5_modify_name();
+	void mode_31_print_player_row_id();
+	void mode_32_print_player_row_elo();
 	void mode_33_print_all_row_id();
 	void mode_34_print_all_row_elo();
-	void mode_41_print_id_all_col();
-	void mode_51_print_grouping();
-
-	void mode_61_load_record();
-
+	void mode_41_print_id_user_col();
+	void mode_42_print_id_all_col();
+	void mode_51_print_grouping_random();
+	void mode_52_print_grouping_elo();
 
 };
