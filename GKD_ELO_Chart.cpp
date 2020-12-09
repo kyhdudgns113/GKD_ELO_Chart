@@ -1511,6 +1511,28 @@ double GKD_ELO_Chart::get_win_rate(int id) {
 	return this->return_win_rate(id);
 }
 
+double GKD_ELO_Chart::return_elo(int id) {
+	return this->deck_row[id].elo;
+}
+double GKD_ELO_Chart::get_elo(int id) {
+	return this->return_elo(id);
+}
+
+//
+//	이름은 변환된다.
+//	이름이 없으면 0 이나 -1 을 리턴한다.
+//
+double GKD_ELO_Chart::return_elo(std::string name) {
+	int id = this->find_id(name);
+	return this->return_elo(id);
+}
+//
+//	이름은 변환된다.
+//	이름이 없으면 0 이나 -1 을 리턴한다.
+//
+double GKD_ELO_Chart::get_elo(std::string name) {
+	return this->return_elo(name);
+}
 int GKD_ELO_Chart::return_tot_win(int id) {
 	int ret = 0;
 	ITERATOR_NAME it_name = this->list_name.name_list.begin();
@@ -2357,4 +2379,154 @@ void GKD_ELO_Chart::mode_52_print_grouping_elo() {
 			printf("\n");
 		}
 	}
+}
+
+//
+//	현재까지의 상대승률및 ELO 를 기반으로 최종적으로 도달할 점수들을 계산한다.
+//	Gradient-Descent 방식으로 계산한다.
+//	상대승률이 없는 경우는 A승률/A승률+B승률 로 둔다.
+//	전적이 없는 경우는 현재 승률을 50%로 둔다.
+//	모든 상대와 붙고나서 최종 점수가 변동이 없는것을 최종 목표로 한다.
+//		- 각 상대점수가 변동이 없게 하는것은 불가하다.
+//
+//	1. 반복 횟수를 입력받는다.
+//		- 메모리 할당을 여기서 한다.
+//	2. 모든 덱에 대해서 현재 본인의 점수를 기록한다.(now_score: N)
+//	3. 다른 모든 덱들과 한 판씩 두고나서의 예상 변화량을 기록하고 저장한다.(now_delta: N*N)
+//		- 이 때 기준 변화량을 (now_base: N*N) 라고 한다.
+//	5. 본인의 점수에 예상 변화량들을 반영한다.
+//	6. 부호가 바뀐다면 기준 변화량을 절반으로 줄인다.
+//	7. 4~6를 반복횟수만큼 반복한다.
+//	8. 메모리 해제
+//
+void GKD_ELO_Chart::mode_61_calculate_final_score() {
+
+	std::vector<NODE_PRINTED_ROW> vec;
+	int ibuf = 0, i = 0, iter_cnt, j = 0, k = 0;
+	int num_user = 0, start_base = 0;
+	double *now_score, **now_delta, **now_base, **win_rate;
+	double *elo_win;
+
+	printf("\nMODE 61 : 점수계산을 실행합니다.\n");
+
+	auto it = this->list_name.name_list.begin();
+
+	while (it != this->list_name.name_list.end()) {
+		if (GET_TYPE_DECK(it->first) > GET_TYPE_DECK(ID_BASE_NORMAL))
+			break;
+		NODE_PRINTED_ROW temp_node;
+		temp_node.id = it->first;
+		temp_node.elo = this->get_elo(it->first);
+		temp_node.win_rate = this->get_win_rate(it->first);
+		strcpy(temp_node.name, it->second.c_str());
+
+		vec.push_back(temp_node);
+
+		it++;
+		num_user++;
+	}
+
+//	1. 반복 횟수를 입력받는다.
+
+	printf("반복 횟수를 입력하시오 : ");
+	std::cin >> iter_cnt;
+	if (iter_cnt == -1)
+		return;
+
+	printf("기준 변화량을 입력하시오 : ");
+	std::cin >> start_base;
+	if (start_base <= 0)
+		return;
+
+	now_score = (double*)malloc(sizeof(double) * num_user);
+	elo_win = (double*)malloc(sizeof(double) * num_user);
+	now_delta = (double**)malloc(sizeof(double*) * num_user);
+	now_base = (double**)malloc(sizeof(double*) * num_user);
+	win_rate = (double**)malloc(sizeof(double*) * num_user);
+
+	for (i = 0; i < num_user; i++) {
+		//	2. 본인 초기점수를 저장한다.
+		now_score[i] = vec[i].elo;
+		elo_win[i] = 0;
+
+		now_delta[i] = (double*)malloc(sizeof(double) * num_user);
+		now_base[i] = (double*)malloc(sizeof(double) * num_user);
+		win_rate[i] = (double*)malloc(sizeof(double) * num_user);
+
+		for (j = 0; j < num_user; j++) {
+			now_delta[i][j] = 0;
+			now_base[i][j] = start_base;
+			double i_win_j = (double)this->deck_row[vec[i].id].score_map[vec[j].id].sum_win() + 1;
+			double j_win_i = (double)this->deck_row[vec[j].id].score_map[vec[i].id].sum_win() + 1;
+			win_rate[i][j] = i_win_j / (i_win_j + j_win_i);
+		}
+	}
+
+//	3. (초기화) 다른 모든 덱들과 한 판씩 두고나서의 예상 변화량을 기록하고 저장한다.(now_delta: N*N)
+//		- 이 때 기준 변화량을 (now_base: N*N) 라고 한다.
+
+	for (i = 0; i < num_user; i++) {
+		for (j = i + 1; j < num_user; j++) {
+			double exp_i = pow(10, now_score[i]/ GKD_ELO_RATE_BASE);
+			double exp_j = pow(10, now_score[j]/ GKD_ELO_RATE_BASE);
+
+			double elo_i_win = exp_i / (exp_i + exp_j);
+			double elo_j_win = exp_j / (exp_i + exp_j);
+
+			double temp_delta_i_win = now_base[i][j] * (win_rate[i][j] * elo_j_win - win_rate[j][i] * elo_i_win);
+
+			now_delta[i][j] = temp_delta_i_win;
+			now_delta[j][i] = -temp_delta_i_win;
+		}
+	}
+//	4. 다른 모든 덱들과 한 판씩 두고나서의 예상 변화량을 기록하고 저장한다.(now_delta: N*N)
+//	5. 본인의 점수에 예상 변화량(now_delta) 들을 반영한다.
+//	6. 부호가 바뀐다면 기준 변화량(now_base)을 절반으로 줄인다.
+//	7. 4~6를 반복횟수만큼 반복한다.
+
+	while (iter_cnt--) {
+		for (i = 0; i < num_user; i++)
+			elo_win[i] = pow(10, now_score[i] / GKD_ELO_RATE_BASE);
+
+		for (i = 0; i < num_user; i++) {
+			for (j = i + 1; j < num_user; j++) {
+
+				double temp_delta_i_win = now_base[i][j] * (win_rate[i][j] * elo_win[j] - win_rate[j][i] * elo_win[i]) / (elo_win[i] + elo_win[j]);
+				
+				if (temp_delta_i_win * now_delta[i][j] < 0) {
+					now_base[i][j] /= 2;
+					now_base[j][i] /= 2;
+					temp_delta_i_win /= 2;
+				}
+				now_delta[i][j] = temp_delta_i_win;
+				now_delta[j][i] = -temp_delta_i_win;
+			}
+		}
+		for (i = 0; i < num_user; i++)
+			for (j = 0; j < num_user; j++)
+				now_score[i] += now_delta[i][j];
+	
+	}
+	printf("\n");
+	for (i = 0; i < num_user; i++) {
+		this->print_color_deck_number(vec[i].id);
+		printf(", ");
+		this->print_color_deck_name_return_length(vec[i].id, 1);
+		printf(" : %.2lf -> %.2lf\n", this->deck_row[vec[i].id].elo, now_score[i]);
+
+		if (i % 4 == 3)
+			printf("\n");
+	}
+
+	//	8. 메모리 해제
+	for (i = 0; i < num_user; i++) {
+		free(now_delta[i]);
+		free(now_base[i]);
+		free(win_rate[i]);
+	}
+
+	free(win_rate);
+	free(now_score);
+	free(now_delta);
+	free(now_base);
 }

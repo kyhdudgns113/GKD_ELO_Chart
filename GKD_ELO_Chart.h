@@ -54,6 +54,10 @@ public :
 	std::tuple<int*, int, int*> get_total_score_id(int);
 	double return_win_rate(int);
 	double get_win_rate(int);
+	double return_elo(int);
+	double get_elo(int);
+	double return_elo(std::string);
+	double get_elo(std::string);
 	int return_tot_win(int);
 	int get_tot_win(int);
 	int return_tot_lose(int);
@@ -76,5 +80,6 @@ public :
 	void mode_42_print_id_all_col();
 	void mode_51_print_grouping_random();
 	void mode_52_print_grouping_elo();
+	void mode_61_calculate_final_score();
 
 };

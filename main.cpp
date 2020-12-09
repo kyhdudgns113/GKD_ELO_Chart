@@ -29,6 +29,7 @@ int main() {
 		printf(" 42 or : 특정 row의 모든 col 확인, id순\n");
 		printf(" 51 or : 랜덤리그 구성_랜덤배치\n");
 		printf(" 52 or : 랜덤리그 구성_ELO 순 배치\n");
+		printf(" 61 or : 점수 Converge 계산\n");
 		printf(" -1 : 저장 안하고 종료\n");
 
 		std::cin >> input_order;
@@ -59,6 +60,8 @@ int main() {
 			gkd_chart.mode_51_print_grouping_random();
 		else if (input_order == "52")
 			gkd_chart.mode_52_print_grouping_elo();
+		else if (input_order == "61")
+			gkd_chart.mode_61_calculate_final_score();
 		else if (input_order == "cls" || input_order == "clr")
 			system("cls");
 		else if (input_order == "-1") {
