@@ -673,6 +673,7 @@ int GKD_ELO_Chart::get_battle(std::string win, std::string lose, int how_much) {
 	int idw = this->find_id(win), idl = this->find_id(lose);
 	double delta_elo = 0;
 	double ew = this->deck_row[idw].elo, el = this->deck_row[idl].elo;
+	double num_user_deck = this->get_size_exclude_npc();
 
 
 	//	1. ELO 계산
@@ -682,7 +683,7 @@ int GKD_ELO_Chart::get_battle(std::string win, std::string lose, int how_much) {
 
 	double lose_rate = els / (ews + els);	//	진 놈이 이긴 확률을 곱해야 한다.
 
-	delta_elo = lose_rate * GKD_ELO_DELTA[how_much] + GKD_ELO_DELTA_PLUS[how_much];
+	delta_elo = lose_rate * GKD_ELO_DELTA[how_much] * GKD_ELO_COEFFICIENT(num_user_deck) + GKD_ELO_DELTA_PLUS[how_much];
 
 	this->deck_row[idw].elo += delta_elo + 0.001;
 	this->deck_row[idl].elo -= delta_elo;
@@ -2403,7 +2404,7 @@ void GKD_ELO_Chart::mode_61_calculate_final_score() {
 
 	std::vector<NODE_PRINTED_ROW> vec;
 	int ibuf = 0, i = 0, iter_cnt, j = 0, k = 0;
-	int num_user = 0, start_base = 0;
+	int num_user = 0, start_base = 0, i_id = 0, j_id = 0;
 	double *now_score, **now_delta, **now_base, **win_rate;
 	double *elo_win;
 
@@ -2448,17 +2449,37 @@ void GKD_ELO_Chart::mode_61_calculate_final_score() {
 		//	2. 본인 초기점수를 저장한다.
 		now_score[i] = vec[i].elo;
 		elo_win[i] = 0;
+		i_id = vec[i].id;
 
 		now_delta[i] = (double*)malloc(sizeof(double) * num_user);
 		now_base[i] = (double*)malloc(sizeof(double) * num_user);
 		win_rate[i] = (double*)malloc(sizeof(double) * num_user);
 
 		for (j = 0; j < num_user; j++) {
+			j_id = vec[j].id;
 			now_delta[i][j] = 0;
 			now_base[i][j] = start_base;
-			double i_win_j = (double)this->deck_row[vec[i].id].score_map[vec[j].id].sum_win() + 1;
-			double j_win_i = (double)this->deck_row[vec[j].id].score_map[vec[i].id].sum_win() + 1;
-			win_rate[i][j] = i_win_j / (i_win_j + j_win_i);
+			double i_win_j = (double)this->deck_row[i_id].score_map[j_id].sum_win() + 1;
+			double j_win_i = (double)this->deck_row[j_id].score_map[i_id].sum_win() + 1;
+
+			if (i_win_j == 1 && j_win_i == 1) {
+				double i_rate = 0, j_rate = 0;
+
+				if ((double)this->get_tot_win(i_id) + this->get_tot_lose(i_id) == 0)
+					i_rate = 0.5;
+				else
+					i_rate = this->get_win_rate(i_id);
+
+				if ((double)this->get_tot_win(j_id) + this->get_tot_lose(j_id) == 0)
+					j_rate = 0.5;
+				else
+					j_rate = this->get_win_rate(j_id);
+
+				win_rate[i][j] = i_rate / (i_rate + j_rate);
+
+			}
+			else
+				win_rate[i][j] = i_win_j / (i_win_j + j_win_i);
 		}
 	}
 
