@@ -40,15 +40,22 @@ public :
 	int get_battle(std::string, std::string, int);
 	std::string if_exist_convert_or_create(std::string _input_string);
 	std::pair<std::string, int> input_result_and_get_battle(std::string _a, std::string _b);
+	std::vector<NODE_PRINTED_ROW> insert_deck_into_vector_by_printed_row(int _npc);
 
 	std::pair<int, std::string> convert_name(std::string);	
 	std::string find_name_with_id(int);
 	std::string find_name_with_input_string(std::string);
 	int find_id(std::string);
+	void set_text_color_by_type(int id);
+	int print_id_name(int id, int mode);
+	int print_id_name(std::string, int mode);
 	int print_color_deck_name_return_length(int, int);
 	int print_color_deck_name_return_length(std::string, int);
-	int print_color_deck_number(int);
+	int print_color_deck_number(int, int);
 	int print_insert_new_deck_error(int, std::string);
+	void print_relative_score_top(int _id);
+	void print_relative_score(int _id, int _npc);
+	void print_grouping(int npc);
 
 	std::tuple<int*, int, int*> return_total_score_id(int);
 	std::tuple<int*, int, int*> get_total_score_id(int);

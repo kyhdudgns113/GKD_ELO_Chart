@@ -87,8 +87,20 @@ const double GKD_ELO_DELTA_PLUS[] = {0, 0.1, 0.2, 0.3, 0.5, 0.8, 1.2};
 #define COLOR_DECK_NPC			COLOR_GREY
 
 #define PRINT_BLANK_BASE	24
-#define PRINT_LENGTH_BLANK	1
-#define PRINT_ENTER			2
+#define PRINT_AFTER_LENGTH_BLANK	1
+#define PRINT_AFTER_ENTER			2
+#define PRINT_NAME_NAME				4
+#define PRINT_ID_ID					8
+#define PRINT_ID_AFTER_COMMA		16
+#define PRINT_PREV_BLANK			32
+#define PRINT_PREV_TAB				64
+
+
+#define PRINT_INCLUDE_NPC	1
+#define PRINT_EXCLUDE_NPC	0
+
+#define GROUPING_RANDOM		51
+#define GROUPING_ELO		52
 
 typedef struct gkd_node_birth  {
 	int year = 2020;

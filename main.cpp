@@ -14,6 +14,8 @@ int main() {
 	GKD_ELO_Chart gkd_chart;
 	std::string input_order;
 
+
+
 	while (true) {
 		printf("Input order\n");
 		printf(" 1 or : 파일 읽기\n");
