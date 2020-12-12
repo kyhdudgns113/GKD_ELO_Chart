@@ -1537,6 +1537,149 @@ void GKD_ELO_Chart::print_grouping(int _mode) {
 	
 }
 
+//	_mode
+//		61 : ID 순서 출력
+//		62 : ELO 순서 출력
+//
+//	1. 반복 횟수를 입력받는다.
+//		- 메모리 할당을 여기서 한다.
+//	2. 모든 덱에 대해서 현재 본인의 점수를 기록한다.(now_score: N)
+//	3. 다른 모든 덱들과 한 판씩 두고나서의 예상 변화량을 기록하고 저장한다.(now_delta: N*N)
+//		- 이 때 기준 변화량을 (now_base: N*N) 라고 한다.
+//	5. 본인의 점수에 예상 변화량들을 반영한다.
+//	6. 부호가 바뀐다면 기준 변화량을 절반으로 줄인다.
+//	7. 4~6를 반복횟수만큼 반복한다.
+//	8. 메모리 해제
+void GKD_ELO_Chart::print_calculating_score(int _mode) {
+	std::vector<NODE_PRINTED_ROW> vec;
+	int ibuf = 0, i = 0, iter_cnt, j = 0, k = 0;
+	int num_user = 0, start_base = 0, i_id = 0, j_id = 0;
+	double* now_score, ** now_delta, ** now_base, ** win_rate;
+	double* elo_win;
+
+	//	NPC를 제외한다.
+	vec = this->insert_deck_into_vector_by_printed_row(PRINT_EXCLUDE_NPC);
+
+	//	1. 반복 횟수를 입력받는다.
+
+	printf("반복 횟수를 입력하시오 : ");
+	std::cin >> iter_cnt;
+	if (iter_cnt == -1)
+		return;
+
+	printf("기준 변화량을 입력하시오 : ");
+	std::cin >> start_base;
+	if (start_base <= 0)
+		return;
+
+	num_user = this->get_size_exclude_npc();
+
+	now_score = new double[num_user];
+	elo_win = new double[num_user];
+	now_delta = new double* [num_user];
+	now_base = new double* [num_user];
+	win_rate = new double* [num_user];
+
+	for (i = 0; i < num_user; i++) {
+		//	2. 본인 초기점수를 저장한다.
+
+		now_delta[i] = new double[num_user];
+		now_base[i] = new double[num_user];
+		win_rate[i] = new double[num_user];
+
+		now_score[i] = vec[i].elo;
+		elo_win[i] = 0;
+		i_id = vec[i].id;
+
+		for (j = 0; j < num_user; j++) {
+			j_id = vec[j].id;
+			now_delta[i][j] = 0;
+			now_base[i][j] = start_base;
+			double i_win_j = (double)this->deck_row[i_id].score_map[j_id].sum_win() + 1;
+			double j_win_i = (double)this->deck_row[j_id].score_map[i_id].sum_win() + 1;
+
+			if (i_win_j == 1 && j_win_i == 1) {
+				double i_rate = 0, j_rate = 0;
+
+				i_rate = this->get_tot_win(i_id) + this->get_tot_lose(i_id) == 0 ? 0.5 : this->get_win_rate(i_id);
+				j_rate = this->get_tot_win(j_id) + this->get_tot_lose(j_id) == 0 ? 0.5 : this->get_win_rate(j_id);
+
+				win_rate[i][j] = i_rate / (i_rate + j_rate);
+			}
+			else
+				win_rate[i][j] = i_win_j / (i_win_j + j_win_i);
+		}
+	}
+	//	4. 다른 모든 덱들과 한 판씩 두고나서의 예상 변화량을 기록하고 저장한다.(now_delta: N*N)
+	//	5. 본인의 점수에 예상 변화량(now_delta) 들을 반영한다.
+	//	6. 부호가 바뀐다면 기준 변화량(now_base)을 절반으로 줄인다.
+	//	7. 4~6를 반복횟수만큼 반복한다.
+
+	while (iter_cnt--) {
+		for (i = 0; i < num_user; i++)
+			elo_win[i] = pow(10, now_score[i] / GKD_ELO_RATE_BASE);
+
+		for (i = 0; i < num_user; i++) {
+			for (j = i + 1; j < num_user; j++) {
+				double temp_delta_i_win = now_base[i][j] * (win_rate[i][j] * elo_win[j] - win_rate[j][i] * elo_win[i]) / (elo_win[i] + elo_win[j]);
+
+				if (temp_delta_i_win * now_delta[i][j] < 0) {
+					now_base[i][j] /= 2;
+					now_base[j][i] /= 2;
+					temp_delta_i_win /= 2;
+				}
+
+				now_delta[i][j] = temp_delta_i_win;
+				now_delta[j][i] = -temp_delta_i_win;
+			}
+		}
+		for (i = 0; i < num_user; i++)
+			for (j = 0; j < num_user; j++)
+				now_score[i] += now_delta[i][j];
+
+	}
+	printf("\n\n");
+
+	if (_mode == 62) {
+		auto it = vec.begin();
+		int* id_to_idx = new int[10000];
+		for (i = 0; i < num_user; i++) {
+			id_to_idx[vec[i].id] = i;
+			it++;
+		}
+		std::sort(vec.begin(), it, cmp_row_elo);
+		for (i = 0; i < num_user; i++) {
+			this->print_id_name(vec[i].id, PRINT_ID_AFTER_COMMA | PRINT_AFTER_LENGTH_BLANK);
+			printf(" : %.2lf -> %.2lf\n", this->deck_row[vec[i].id].elo, now_score[id_to_idx[vec[i].id]]);
+			if (i % 4 == 3)
+				printf("\n");
+		}
+
+		delete[] id_to_idx;
+	}
+	else {
+		for (i = 0; i < num_user; i++) {
+			this->print_id_name(vec[i].id, PRINT_ID_AFTER_COMMA | PRINT_AFTER_LENGTH_BLANK);
+			printf(" : %.2lf -> %.2lf\n", this->deck_row[vec[i].id].elo, now_score[i]);
+			if (i % 4 == 3)
+				printf("\n");
+		}
+	}
+	
+
+	//	8. 메모리 해제
+	for (i = 0; i < num_user; i++) {
+		delete[] now_delta[i];
+		delete[] now_base[i];
+		delete[] win_rate[i];
+	}
+
+	delete[] win_rate;
+	delete[] now_score;
+	delete[] now_delta;
+	delete[] now_base;
+}
+
 
 
 //
@@ -2049,8 +2192,10 @@ void GKD_ELO_Chart::mode_41_print_id_user_col() {
 	else
 		input_string = res_input;
 
-	this->print_relative_score_top(this->find_id(input_string));
-	this->print_relative_score(id, PRINT_INCLUDE_NPC);
+	id = this->find_id(input_string);
+
+	this->print_relative_score_top(id);
+	this->print_relative_score(id, PRINT_EXCLUDE_NPC);
 }
 
 //
@@ -2078,7 +2223,9 @@ void GKD_ELO_Chart::mode_42_print_id_all_col() {
 	else
 		input_string = res_input;
 
-	this->print_relative_score_top(this->find_id(input_string));
+	id = this->find_id(input_string);
+
+	this->print_relative_score_top(id);
 	this->print_relative_score(id, PRINT_INCLUDE_NPC);
 
 }
@@ -2108,132 +2255,30 @@ void GKD_ELO_Chart::mode_52_print_grouping_elo() {
 
 //
 //	현재까지의 상대승률및 ELO 를 기반으로 최종적으로 도달할 점수들을 계산한다.
+//	ID 순으로 출력한다.
 //	Gradient-Descent 방식으로 계산한다.
 //	상대승률이 없는 경우는 A승률/A승률+B승률 로 둔다.
 //	전적이 없는 경우는 현재 승률을 50%로 둔다.
 //	모든 상대와 붙고나서 최종 점수가 변동이 없는것을 최종 목표로 한다.
 //		- 각 상대점수가 변동이 없게 하는것은 불가하다.
 //
-//	1. 반복 횟수를 입력받는다.
-//		- 메모리 할당을 여기서 한다.
-//	2. 모든 덱에 대해서 현재 본인의 점수를 기록한다.(now_score: N)
-//	3. 다른 모든 덱들과 한 판씩 두고나서의 예상 변화량을 기록하고 저장한다.(now_delta: N*N)
-//		- 이 때 기준 변화량을 (now_base: N*N) 라고 한다.
-//	5. 본인의 점수에 예상 변화량들을 반영한다.
-//	6. 부호가 바뀐다면 기준 변화량을 절반으로 줄인다.
-//	7. 4~6를 반복횟수만큼 반복한다.
-//	8. 메모리 해제
-//
-void GKD_ELO_Chart::mode_61_calculate_final_score() {
-
-	std::vector<NODE_PRINTED_ROW> vec;
-	int ibuf = 0, i = 0, iter_cnt, j = 0, k = 0;
-	int num_user = 0, start_base = 0, i_id = 0, j_id = 0;
-	double *now_score, **now_delta, **now_base, **win_rate;
-	double *elo_win;
-
-	printf("\nMODE 61 : 점수계산을 실행합니다.\n");
-
-	//	NPC를 제외한다.
-	vec = this->insert_deck_into_vector_by_printed_row(PRINT_EXCLUDE_NPC);
-
-//	1. 반복 횟수를 입력받는다.
-
-	printf("반복 횟수를 입력하시오 : ");
-	std::cin >> iter_cnt;
-	if (iter_cnt == -1)
-		return;
-
-	printf("기준 변화량을 입력하시오 : ");
-	std::cin >> start_base;
-	if (start_base <= 0)
-		return;
-
-	num_user = this->get_size_exclude_npc();
-
-	now_score = new double[num_user];
-	elo_win = new double[num_user];
-	now_delta = new double* [num_user];
-	now_base = new double* [num_user];
-	win_rate = new double* [num_user];
-
-	for (i = 0; i < num_user; i++) {
-		//	2. 본인 초기점수를 저장한다.
-
-		now_delta[i] = new double[num_user];
-		now_base[i] = new double[num_user];
-		win_rate[i] = new double[num_user];
-
-		now_score[i] = vec[i].elo;
-		elo_win[i] = 0;
-		i_id = vec[i].id;
-
-		for (j = 0; j < num_user; j++) {
-			j_id = vec[j].id;
-			now_delta[i][j] = 0;
-			now_base[i][j] = start_base;
-			double i_win_j = (double)this->deck_row[i_id].score_map[j_id].sum_win() + 1;
-			double j_win_i = (double)this->deck_row[j_id].score_map[i_id].sum_win() + 1;
-
-			if (i_win_j == 1 && j_win_i == 1) {
-				double i_rate = 0, j_rate = 0;
-
-				i_rate = this->get_tot_win(i_id) + this->get_tot_lose(i_id) == 0 ? 0.5 : this->get_win_rate(i_id);
-				j_rate = this->get_tot_win(j_id) + this->get_tot_lose(j_id) == 0 ? 0.5 : this->get_win_rate(j_id);
-
-				win_rate[i][j] = i_rate / (i_rate + j_rate);
-			}
-			else
-				win_rate[i][j] = i_win_j / (i_win_j + j_win_i);
-		}
-	}
-//	4. 다른 모든 덱들과 한 판씩 두고나서의 예상 변화량을 기록하고 저장한다.(now_delta: N*N)
-//	5. 본인의 점수에 예상 변화량(now_delta) 들을 반영한다.
-//	6. 부호가 바뀐다면 기준 변화량(now_base)을 절반으로 줄인다.
-//	7. 4~6를 반복횟수만큼 반복한다.
-
-	while (iter_cnt--) {
-		for (i = 0; i < num_user; i++)
-			elo_win[i] = pow(10, now_score[i] / GKD_ELO_RATE_BASE);
-
-		for (i = 0; i < num_user; i++) {
-			for (j = i + 1; j < num_user; j++) {
-				double temp_delta_i_win = now_base[i][j] * (win_rate[i][j] * elo_win[j] - win_rate[j][i] * elo_win[i]) / (elo_win[i] + elo_win[j]);
-				
-				if (temp_delta_i_win * now_delta[i][j] < 0) {
-					now_base[i][j] /= 2;
-					now_base[j][i] /= 2;
-					temp_delta_i_win /= 2;
-				}
-
-				now_delta[i][j] = temp_delta_i_win;
-				now_delta[j][i] = -temp_delta_i_win;
-			}
-		}
-		for (i = 0; i < num_user; i++)
-			for (j = 0; j < num_user; j++)
-				now_score[i] += now_delta[i][j];
-	
-	}
-	printf("\n");
-	for (i = 0; i < num_user; i++) {
-		this->print_id_name(vec[i].id, PRINT_ID_AFTER_COMMA | PRINT_AFTER_LENGTH_BLANK);
-
-		printf(" : %.2lf -> %.2lf\n", this->deck_row[vec[i].id].elo, now_score[i]);
-
-		if (i % 4 == 3)
-			printf("\n");
-	}
-
-	//	8. 메모리 해제
-	for (i = 0; i < num_user; i++) {
-		delete[] now_delta[i];
-		delete[] now_base[i];
-		delete[] win_rate[i];
-	}
-
-	delete[] win_rate;
-	delete[] now_score;
-	delete[] now_delta;
-	delete[] now_base;
+void GKD_ELO_Chart::mode_61_calculate_final_score_id() {
+	printf("\nMODE 61 : 점수계산_ID 를 실행합니다.\n");
+	this->print_calculating_score(61);	
 }
+
+//
+//	현재까지의 상대승률및 ELO 를 기반으로 최종적으로 도달할 점수들을 계산한다.
+//	ID 순으로 출력한다.
+//	Gradient-Descent 방식으로 계산한다.
+//	상대승률이 없는 경우는 A승률/A승률+B승률 로 둔다.
+//	전적이 없는 경우는 현재 승률을 50%로 둔다.
+//	모든 상대와 붙고나서 최종 점수가 변동이 없는것을 최종 목표로 한다.
+//		- 각 상대점수가 변동이 없게 하는것은 불가하다.
+//
+void GKD_ELO_Chart::mode_62_calculate_final_score_elo() {
+	printf("\nMODE 62 : 점수계산_ELO 를 실행합니다.\n");
+	this->print_calculating_score(62);
+}
+
+

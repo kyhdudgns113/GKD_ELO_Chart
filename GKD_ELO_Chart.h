@@ -13,7 +13,7 @@
 class GKD_ELO_Chart {
 	int tw[7], td, tl[7];
 	bool isFiled = false;
-public :
+public:
 	std::unordered_map<int, NODE_DECK_ROW> deck_row;
 	List_Name list_name;	//	Tail 에 넣어야 한다.
 	NODE_CARD_Score card_score[CNT_CARD][CNT_CARD];
@@ -33,7 +33,7 @@ public :
 	void write_record_node_csv(FILE*, NODE_Record_Entire);
 	void write_record_csv_top_title(FILE*);
 	void write_modified_deck_name();
-	
+
 	void set_t_zero();
 	int insert_new_deck(std::string);
 	int insert_saved_deck(int, std::string);
@@ -42,7 +42,7 @@ public :
 	std::pair<std::string, int> input_result_and_get_battle(std::string _a, std::string _b);
 	std::vector<NODE_PRINTED_ROW> insert_deck_into_vector_by_printed_row(int _npc);
 
-	std::pair<int, std::string> convert_name(std::string);	
+	std::pair<int, std::string> convert_name(std::string);
 	std::string find_name_with_id(int);
 	std::string find_name_with_input_string(std::string);
 	int find_id(std::string);
@@ -56,6 +56,7 @@ public :
 	void print_relative_score_top(int _id);
 	void print_relative_score(int _id, int _npc);
 	void print_grouping(int npc);
+	void print_calculating_score(int _mode);
 
 	std::tuple<int*, int, int*> return_total_score_id(int);
 	std::tuple<int*, int, int*> get_total_score_id(int);
@@ -87,6 +88,6 @@ public :
 	void mode_42_print_id_all_col();
 	void mode_51_print_grouping_random();
 	void mode_52_print_grouping_elo();
-	void mode_61_calculate_final_score();
-
+	void mode_61_calculate_final_score_id();
+	void mode_62_calculate_final_score_elo();
 };

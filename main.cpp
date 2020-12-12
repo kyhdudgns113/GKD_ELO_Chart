@@ -31,7 +31,8 @@ int main() {
 		printf(" 42 or : 특정 row의 모든 col 확인, id순\n");
 		printf(" 51 or : 랜덤리그 구성_랜덤배치\n");
 		printf(" 52 or : 랜덤리그 구성_ELO 순 배치\n");
-		printf(" 61 or : 점수 Converge 계산\n");
+		printf(" 61 or : 점수 Converge 계산_ID 순서 정렬\n");
+		printf(" 62 or : 점수 Converge 계산_ELO 순서 정렬\n");
 		printf(" -1 : 저장 안하고 종료\n");
 
 		std::cin >> input_order;
@@ -63,14 +64,16 @@ int main() {
 		else if (input_order == "52")
 			gkd_chart.mode_52_print_grouping_elo();
 		else if (input_order == "61")
-			gkd_chart.mode_61_calculate_final_score();
+			gkd_chart.mode_61_calculate_final_score_id();
+		else if(input_order == "62")
+			gkd_chart.mode_62_calculate_final_score_elo();
 		else if (input_order == "cls" || input_order == "clr")
 			system("cls");
 		else if (input_order == "-1") {
 			printf("Main while 취소 명령을 실행합니다. \n");
 			break;
 		}
-		printf("\n\n\n\n");
+		printf("\n\n");
 	}
 	printf("PROGRAM FINISHED\n");
 	return 0;		
