@@ -1,8 +1,8 @@
 ID	3001
 NAME	WATER-EnergyBurn
-ELO	2089.663025
+ELO	2083.712781
 					  W6  W5  W4  W3  W2  W1   D  L1  L2  L3  L4  L5  L6
-	Total				  12  23   9   8   3   1   0   1   2   2   7  17  10
+	Total				  15  24  10   8   4   1   0   1   2   2   7  19  12
 1001	GRASS-DrainVenu                    2   1   0   3   0   0   0   0   0   0   1   1   2
 1002	GRASS-GoldBok                      3   2   1   1   0   0   0   0   0   0   1   1   1
 1003	GRASS-NidoKing                     0   1   0   0   0   0   0   0   0   1   0   2   1
@@ -11,8 +11,8 @@ ELO	2089.663025
 2003	FIRE-Windy                         0   0   0   1   0   0   0   0   1   0   2   1   0
 3002	WATER-Blast                        1   1   0   0   0   0   0   0   0   0   0   2   1
 4001	LIGHTNING-Zapdo                    1   1   0   0   0   0   0   0   0   0   0   3   0
-4002	LIGHTNING-Chain                    0   0   0   0   0   0   0   0   0   0   0   0   0
-5001	FIGHT-Monkey                       0   2   2   1   0   0   0   0   0   0   0   0   0
+4002	LIGHTNING-Chain                    1   0   1   0   0   0   0   0   0   0   0   2   1
+5001	FIGHT-Monkey                       2   3   2   1   1   0   0   0   0   0   0   0   1
 5002	FIGHT-Wiggle                       0   6   0   0   1   0   0   0   0   0   0   2   1
 5003	FIGHT-Bone                         1   1   1   0   1   1   0   0   0   0   0   0   0
 6001	PSYCHIC-Nasi                       3   3   1   0   0   0   0   0   0   0   1   2   0

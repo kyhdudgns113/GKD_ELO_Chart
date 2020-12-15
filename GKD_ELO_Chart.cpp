@@ -1468,6 +1468,7 @@ void GKD_ELO_Chart::print_grouping(int _mode) {
 
 	if (entire_number > this->deck_row.size() || entire_number < 1) {
 		printf("초과된 범위의 입력입니다.\n");
+		flush_input_buffer();
 		return;
 	}
 
@@ -1477,6 +1478,7 @@ void GKD_ELO_Chart::print_grouping(int _mode) {
 
 	if (member_number < 1 || entire_number % member_number != 0) {
 		printf("잘못된 입력입니다. \n");
+		flush_input_buffer();
 		return;
 	}
 
@@ -1564,13 +1566,17 @@ void GKD_ELO_Chart::print_calculating_score(int _mode) {
 
 	printf("반복 횟수를 입력하시오 : ");
 	std::cin >> iter_cnt;
-	if (iter_cnt == -1)
+	if (iter_cnt == -1) {
+		flush_input_buffer();
 		return;
+	}
 
 	printf("기준 변화량을 입력하시오 : ");
 	std::cin >> start_base;
-	if (start_base <= 0)
+	if (start_base <= 0) {
+		flush_input_buffer();
 		return;
+	}
 
 	num_user = this->get_size_exclude_npc();
 
@@ -1833,6 +1839,7 @@ void GKD_ELO_Chart::mode_1_read_file() {
 	printf("\nMode 1 : read_file 을 실행합니다.\n");
 	if (this->isFiled) {
 		printf("이미 파일을 읽었습니다. \n");
+		flush_input_buffer();
 		return;
 	}
 
@@ -1840,6 +1847,7 @@ void GKD_ELO_Chart::mode_1_read_file() {
 	err = this->read_name_list();
 	if (err) {
 		printf("이름 리스트 파일이 없습니다.\n");
+		flush_input_buffer();
 		return;
 	}
 	
@@ -1909,12 +1917,18 @@ void GKD_ELO_Chart::mode_3_add_deck() {
 	std::cin >> input_string;
 	if (input_string == "-1") {
 		printf("취소합니다.\n");
+		flush_input_buffer();
 		return;
 	}
-	if (this->print_insert_new_deck_error(this->insert_new_deck(input_string), "(ADD_DECK : " + input_string + ")") == NULL) {
+	err = this->print_insert_new_deck_error(this->insert_new_deck(input_string), "(ADD_DECK : " + input_string + ")");
+	if (err == NULL) {
 		int temp_id = this->find_id(input_string);
 		this->print_id_name(input_string, PRINT_ID_AFTER_COMMA);
 		printf(" 가 생성되었다. \n");
+	}
+	else {
+		flush_input_buffer();
+		return;
 	}
 }
 
@@ -1940,14 +1954,18 @@ void GKD_ELO_Chart::mode_4_get_battle() {
 	printf("a 를 입력하여 주십시오 : ");
 	std::cin >> a;
 	a = this->if_exist_convert_or_create(a);
-	if (a == "-1" || a == NULL_STRING)
+	if (a == "-1" || a == NULL_STRING) {
+		flush_input_buffer();
 		return;
+	}
 
 	printf("b 를 입력하여 주십시오 : ");
 	std::cin >> b;
 	b = this->if_exist_convert_or_create(b);
-	if (b == "-1" || b == NULL_STRING)
+	if (b == "-1" || b == NULL_STRING) {
+		flush_input_buffer();
 		return;
+	}
 
 	//	2. 결과를 입력받고 battle 을 실행하는 부분
 	int how_much = 0;
@@ -1992,8 +2010,10 @@ mode_5_1:
 	std::cin >> input_string;
 	res_string = this->find_name_with_input_string(input_string);
 
-	if (res_string == "-1")
+	if (res_string == "-1") {
+		flush_input_buffer();
 		return;
+	}
 	else if (res_string == NULL_STRING) {
 		printf("그런 이름은 존재하지 않습니다. \n");
 		goto mode_5_1;
@@ -2012,8 +2032,10 @@ mode_5_2:
 	printf("바꿀 이름을 입력하시오 (-1 : 취소)\n");
 
 	std::cin >> input_string;
-	if (input_string == "-1")
+	if (input_string == "-1") {
+		flush_input_buffer();
 		return;
+	}
 
 	res_pair = this->convert_name(input_string);
 	if (res_pair.first == 0 || GET_DECK_TYPE(res_pair.first) != GET_DECK_TYPE(deck_id)) {
@@ -2183,10 +2205,12 @@ void GKD_ELO_Chart::mode_41_print_id_user_col() {
 	res_input = this->find_name_with_input_string(input_string);
 	if (res_input == "-1") {
 		printf("취소합니다. \n");
+		flush_input_buffer();
 		return;
 	}
 	else if (res_input == NULL_STRING) {
 		printf("%s 는 리스트에 없습니다. \n", input_string.c_str());
+		flush_input_buffer();
 		return;
 	}
 	else
@@ -2214,10 +2238,12 @@ void GKD_ELO_Chart::mode_42_print_id_all_col() {
 	res_input = this->find_name_with_input_string(input_string);
 	if (res_input == "-1") {
 		printf("취소합니다. \n");
+		flush_input_buffer();
 		return;
 	}
 	else if (res_input == NULL_STRING) {
 		printf("%s 는 리스트에 없습니다. \n", input_string.c_str());
+		flush_input_buffer();
 		return;
 	}
 	else

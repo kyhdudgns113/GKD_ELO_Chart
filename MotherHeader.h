@@ -119,3 +119,4 @@ typedef struct gkd_node_printed_row {
 
 
 bool cmp_row_elo(NODE_PRINTED_ROW a, NODE_PRINTED_ROW b);
+void flush_input_buffer();

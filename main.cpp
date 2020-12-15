@@ -8,13 +8,10 @@
 
 //using namespace std;
 
-
 int main() {
 
 	GKD_ELO_Chart gkd_chart;
 	std::string input_order;
-
-
 
 	while (true) {
 		printf("Input order\n");
@@ -74,6 +71,7 @@ int main() {
 			break;
 		}
 		printf("\n\n");
+		
 	}
 	printf("PROGRAM FINISHED\n");
 	return 0;		

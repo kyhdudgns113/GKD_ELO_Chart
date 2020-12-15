@@ -1,8 +1,8 @@
 ID	5003
 NAME	FIGHT-Bone
-ELO	1799.157937
+ELO	1803.101283
 					  W6  W5  W4  W3  W2  W1   D  L1  L2  L3  L4  L5  L6
-	Total				   9   2   1   3   0   0   0   4   1   2  10  13  15
+	Total				  13   2   1   4   0   0   0   4   1   2  10  14  19
 1001	GRASS-DrainVenu                    0   0   0   1   0   0   0   0   0   0   2   1   1
 1002	GRASS-GoldBok                      0   0   0   0   0   0   0   1   0   0   0   0   4
 1003	GRASS-NidoKing                     2   1   0   0   0   0   0   0   0   0   1   0   1
@@ -12,8 +12,8 @@ ELO	1799.157937
 3001	WATER-EnergyBurn                   0   0   0   0   0   0   0   1   1   0   1   1   1
 3002	WATER-Blast                        0   0   1   1   0   0   0   1   0   1   0   1   0
 4001	LIGHTNING-Zapdo                    0   0   0   0   0   0   0   0   0   0   2   2   1
-4002	LIGHTNING-Chain                    0   0   0   0   0   0   0   0   0   0   0   0   0
-5001	FIGHT-Monkey                       0   0   0   0   0   0   0   0   0   0   0   0   0
+4002	LIGHTNING-Chain                    2   0   0   0   0   0   0   0   0   0   0   1   2
+5001	FIGHT-Monkey                       2   0   0   1   0   0   0   0   0   0   0   0   2
 5002	FIGHT-Wiggle                       1   0   0   0   0   0   0   0   0   0   0   1   3
 6001	PSYCHIC-Nasi                       2   0   0   0   0   0   0   0   0   0   0   1   2
 6002	PSYCHIC-AntiCarry                  0   0   0   0   0   0   0   0   0   0   0   0   0
