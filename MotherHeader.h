@@ -28,9 +28,10 @@ const char STRING_DIR_RESULT[] = "Result";
 #define PREDICT_NUM_GAME	5
 #define GKD_ELO_A			4
 #define GKD_ELO_B			0
-#define GKD_ELO_COEFFICIENT(a)	COEF_CALCULATE_SQRT_16(a)
+#define GKD_ELO_COEFFICIENT(x)	COEF_CALCULATE_SQRT_16(x)
 
-#define COEF_CALCULATE_SQRT_16(a)	((sqrt(16 + GKD_ELO_B) + GKD_ELO_A)/(sqrt(a + GKD_ELO_B) + GKD_ELO_A))
+//	{sqrt(16+ELO_B) + ELO_A} / {sqrt(x+ELO_B) + ELO_A}
+#define COEF_CALCULATE_SQRT_16(x)	((sqrt(16 + GKD_ELO_B) + GKD_ELO_A)/(sqrt(x + GKD_ELO_B) + GKD_ELO_A))
 
 //	GKD_ELO_DELTA[i] : i 차이일때의 기본 점수
 //		i == 0 : 비겼을때의 기본 점수

@@ -690,10 +690,13 @@ int GKD_ELO_Chart::get_battle(std::string win, std::string lose, int how_much) {
 	double ews = pow(10, ew / GKD_ELO_RATE_BASE), els = pow(10, el / GKD_ELO_RATE_BASE);
 
 	double lose_rate = els / (ews + els);	//	진 놈이 이긴 확률을 곱해야 한다.
+	double delta_coef = GKD_ELO_DELTA[how_much] * GKD_ELO_COEFFICIENT(num_user_deck);
+	double rate_delta_coef = lose_rate * delta_coef;
+	double plus_coef = GKD_ELO_DELTA_PLUS[how_much] * GKD_ELO_COEFFICIENT(num_user_deck);
 
-	delta_elo = lose_rate * GKD_ELO_DELTA[how_much] * GKD_ELO_COEFFICIENT(num_user_deck) + GKD_ELO_DELTA_PLUS[how_much];
+	delta_elo = rate_delta_coef + plus_coef;
 
-	this->deck_row[idw].elo += delta_elo + 0.001;
+	this->deck_row[idw].elo += delta_elo + 0.0001;
 	this->deck_row[idl].elo -= delta_elo;
 
 	//	2. score 입력
@@ -713,10 +716,10 @@ int GKD_ELO_Chart::get_battle(std::string win, std::string lose, int how_much) {
 
 	printf("\n\n");
 	if (GKD_ELO_DELTA_PLUS[how_much])
-		printf("총합      %3d 전, DELTA : (%.2lf + %.1lf) / (%.1lf) = %.2lf\n\n", twin + tdraw + tlose, lose_rate * GKD_ELO_DELTA[how_much],
-			GKD_ELO_DELTA_PLUS[how_much],  GKD_ELO_DELTA[how_much], delta_elo);
+		printf("총합      %3d 전, DELTA : (%.2lf + %.1lf) / (%.1lf) = %.2lf\n\n", twin + tdraw + tlose, rate_delta_coef,
+			plus_coef, delta_coef, delta_elo);
 	else
-		printf("총합      %3d 전, DELTA : %.2lf / %.1lf\n\n", twin + tdraw + tlose, delta_elo, GKD_ELO_DELTA[how_much]);
+		printf("총합      %3d 전, DELTA : %.2lf / %.1lf\n\n", twin + tdraw + tlose, delta_elo, delta_coef);
 
 	printf("승: ");
 	this->print_color_deck_number(idw, NULL);
@@ -1601,6 +1604,8 @@ void GKD_ELO_Chart::print_calculating_score(int _mode) {
 			j_id = vec[j].id;
 			now_delta[i][j] = 0;
 			now_base[i][j] = start_base;
+			
+			// 승수와 패수에 1씩 더함으로써 랜덤성에 대한 보상을 한다.
 			double i_win_j = (double)this->deck_row[i_id].score_map[j_id].sum_win() + 1;
 			double j_win_i = (double)this->deck_row[j_id].score_map[i_id].sum_win() + 1;
 
@@ -1618,8 +1623,10 @@ void GKD_ELO_Chart::print_calculating_score(int _mode) {
 	}
 	//	4. 다른 모든 덱들과 한 판씩 두고나서의 예상 변화량을 기록하고 저장한다.(now_delta: N*N)
 	//	5. 본인의 점수에 예상 변화량(now_delta) 들을 반영한다.
-	//	6. 부호가 바뀐다면 기준 변화량(now_base)을 절반으로 줄인다.
+	//	6. 부호가 바뀐다면 기준 변화량(now_base)을 learning_rate 만큼 줄인다.
 	//	7. 4~6를 반복횟수만큼 반복한다.
+
+	double learning_rate = 1;
 
 	while (iter_cnt--) {
 		for (i = 0; i < num_user; i++)
@@ -1630,9 +1637,8 @@ void GKD_ELO_Chart::print_calculating_score(int _mode) {
 				double temp_delta_i_win = now_base[i][j] * (win_rate[i][j] * elo_win[j] - win_rate[j][i] * elo_win[i]) / (elo_win[i] + elo_win[j]);
 
 				if (temp_delta_i_win * now_delta[i][j] < 0) {
-					now_base[i][j] /= 2;
-					now_base[j][i] /= 2;
-					temp_delta_i_win /= 2;
+					now_base[i][j] = now_base[i][j] * learning_rate;
+					temp_delta_i_win = temp_delta_i_win * learning_rate;
 				}
 
 				now_delta[i][j] = temp_delta_i_win;
@@ -1651,6 +1657,7 @@ void GKD_ELO_Chart::print_calculating_score(int _mode) {
 		int* id_to_idx = new int[10000];
 		for (i = 0; i < num_user; i++) {
 			id_to_idx[vec[i].id] = i;
+			it->elo = now_score[i];
 			it++;
 		}
 		std::sort(vec.begin(), it, cmp_row_elo);
