@@ -1,8 +1,8 @@
 ID	4001
 NAME	LIGHTNING-Zapdo
-ELO	2208.878928
+ELO	2158.136588
 					  W6  W5  W4  W3  W2  W1   D  L1  L2  L3  L4  L5  L6
-	Total				   6  29   9   2   2   0   0   1   2   1   9   5   4
+	Total				   7  29   9   2   2   0   0   1   2   1  13   5   4
 1001	GRASS-DrainVenu                    0   3   0   1   0   0   0   1   0   0   0   0   0
 1002	GRASS-GoldBok                      0   3   1   0   1   0   0   0   0   0   0   0   0
 1003	GRASS-NidoKing                     0   2   1   0   0   0   0   0   0   0   2   0   0
@@ -16,5 +16,5 @@ ELO	2208.878928
 5002	FIGHT-Wiggle                       0   5   0   0   0   0   0   0   0   0   0   0   0
 5003	FIGHT-Bone                         1   2   2   0   0   0   0   0   0   0   0   0   0
 6001	PSYCHIC-Nasi                       0   2   1   0   0   0   0   0   0   1   0   1   0
-6002	PSYCHIC-AntiCarry                  0   0   0   0   0   0   0   0   0   0   0   0   0
+6002	PSYCHIC-AntiCarry                  1   0   0   0   0   0   0   0   0   0   4   0   0
 6003	PSYCHIC-Abra                       0   0   0   0   0   0   0   0   0   0   5   0   0

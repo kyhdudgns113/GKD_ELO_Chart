@@ -1,15 +1,15 @@
 ID	2003
 NAME	FIRE-Windy
-ELO	2294.071719
+ELO	2346.393112
 					  W6  W5  W4  W3  W2  W1   D  L1  L2  L3  L4  L5  L6
-	Total				   5  17  13   5   3   4   0   0   1   1   1   5   0
-1001	GRASS-DrainVenu                    0   0   0   0   0   0   0   0   0   0   0   0   0
+	Total				   7  21  14   6   4   4   0   0   1   1   1   6   0
+1001	GRASS-DrainVenu                    1   4   0   0   0   0   0   0   0   0   0   0   0
 1002	GRASS-GoldBok                      0   1   4   0   0   0   0   0   0   0   0   0   0
 1003	GRASS-NidoKing                     2   3   0   0   0   0   0   0   0   0   0   0   0
 2001	FIRE-Ninetail                      1   0   1   0   1   0   0   0   0   0   0   2   0
 2002	FIRE-Charizard                     0   1   0   1   0   1   0   0   1   0   0   1   0
 3001	WATER-EnergyBurn                   0   1   2   0   1   0   0   0   0   1   0   0   0
-3002	WATER-Blast                        0   0   0   0   0   0   0   0   0   0   0   0   0
+3002	WATER-Blast                        1   0   1   1   1   0   0   0   0   0   0   1   0
 4001	LIGHTNING-Zapdo                    1   2   0   0   0   0   0   0   0   0   0   2   0
 4002	LIGHTNING-Chain                    0   1   1   2   1   0   0   0   0   0   0   0   0
 5001	FIGHT-Monkey                       0   3   1   1   0   0   0   0   0   0   0   0   0
