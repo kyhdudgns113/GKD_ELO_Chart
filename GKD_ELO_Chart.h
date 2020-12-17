@@ -90,4 +90,6 @@ public:
 	void mode_52_print_grouping_elo();
 	void mode_61_calculate_final_score_id();
 	void mode_62_calculate_final_score_elo();
+	void mode_63_calculate_final_score_id_cnt();
+	void mode_64_calculate_final_score_elo_cnt();
 };
