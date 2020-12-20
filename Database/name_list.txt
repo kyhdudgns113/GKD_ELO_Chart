@@ -12,5 +12,5 @@
 5002    FIGHT-Wiggle
 5003    FIGHT-Bone
 6001    PSYCHIC-Nasi
-6002    PSYCHIC-AntiCarry
+6002    PSYCHIC-Slowbro
 6003    PSYCHIC-Abra

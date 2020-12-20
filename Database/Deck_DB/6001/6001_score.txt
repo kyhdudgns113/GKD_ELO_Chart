@@ -16,5 +16,5 @@ ELO	1797.707890
 5001	FIGHT-Monkey                       2   1   0   0   1   0   0   0   1   0   0   3   2
 5002	FIGHT-Wiggle                       0   1   1   0   0   0   0   2   2   0   2   2   0
 5003	FIGHT-Bone                         2   1   0   0   0   0   0   0   0   0   0   0   2
-6002	PSYCHIC-AntiCarry                  0   0   0   2   1   0   0   0   0   0   0   1   1
+6002	PSYCHIC-Slowbro                    0   0   0   2   1   0   0   0   0   0   0   1   1
 6003	PSYCHIC-Abra                       0   0   0   0   0   0   0   0   0   0   0   0   0

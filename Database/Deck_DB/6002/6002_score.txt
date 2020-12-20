@@ -1,5 +1,5 @@
 ID	6002
-NAME	PSYCHIC-AntiCarry
+NAME	PSYCHIC-Slowbro
 ELO	1732.471504
 					  W6  W5  W4  W3  W2  W1   D  L1  L2  L3  L4  L5  L6
 	Total				   2   5   8   1   1   1   0   3   3  12   9  12  18

@@ -16,5 +16,5 @@ ELO	2243.058047
 5002	FIGHT-Wiggle                       1   2   4   0   0   0   0   0   0   0   1   1   1
 5003	FIGHT-Bone                         1   1   1   0   0   0   0   0   0   0   0   0   2
 6001	PSYCHIC-Nasi                       3   4   3   0   0   0   0   0   0   0   0   0   0
-6002	PSYCHIC-AntiCarry                  1   0   3   0   0   0   0   1   0   0   0   0   0
+6002	PSYCHIC-Slowbro                    1   0   3   0   0   0   0   1   0   0   0   0   0
 6003	PSYCHIC-Abra                       0   1   1   0   1   2   0   0   0   0   0   0   0
