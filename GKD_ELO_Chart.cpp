@@ -1620,11 +1620,11 @@ void GKD_ELO_Chart::print_calculating_score(int _mode) {
 			now_base[i][j] = start_base;
 			win_count[i][j] = 0;
 			
-			// 승수와 패수에 1씩 더함으로써 랜덤성에 대한 보상을 한다.
-			i_win_j = (double)this->deck_row[i_id].score_map[j_id].sum_win() + 1;
-			j_win_i = (double)this->deck_row[j_id].score_map[i_id].sum_win() + 1;
+			// 승수와 패수에 일정 상수를 더함으로써 랜덤성에 대한 보상을 한다.
+			i_win_j = (double)this->deck_row[i_id].score_map[j_id].sum_win() + 0.5;
+			j_win_i = (double)this->deck_row[j_id].score_map[i_id].sum_win() + 0.5;
 
-			if (i_win_j == 1 && j_win_i == 1) {
+			if (i_win_j == 0.5 && j_win_i == 0.5) {
 				i_rate = this->get_tot_win(i_id) + this->get_tot_lose(i_id) == 0 ? 0.5 : this->get_win_rate(i_id);
 				j_rate = this->get_tot_win(j_id) + this->get_tot_lose(j_id) == 0 ? 0.5 : this->get_win_rate(j_id);
 
@@ -1636,7 +1636,7 @@ void GKD_ELO_Chart::print_calculating_score(int _mode) {
 	}
 	//	4. 다른 모든 덱들과 한 판씩 두고나서의 예상 변화량을 기록하고 저장한다.(now_delta: N*N)
 	//	5. 본인의 점수에 예상 변화량(now_delta) 들을 반영한다.
-	//	6. 부호가 바뀐다면 기준 변화량(now_base)을 learning_rate 만큼 줄인다.
+	//	6. now_delta 의 부호가 바뀐다면 기준 변화량(now_base)을 learning_rate 만큼 줄인다.
 	//	7. 4~6를 반복횟수만큼 반복한다.
 
 	learning_rate = 1;
@@ -1691,7 +1691,7 @@ void GKD_ELO_Chart::print_calculating_score(int _mode) {
 		std::sort(vec.begin(), it, cmp_row_elo);
 		for (i = 0; i < num_user; i++) {
 			this->print_id_name(vec[i].id, PRINT_ID_AFTER_COMMA | PRINT_AFTER_LENGTH_BLANK);
-			printf(" : %.2lf -> %.2lf\n", this->deck_row[vec[i].id].elo, now_score[id_to_idx[vec[i].id]]);
+			printf(" : %.2lf -> %.2lf, %.2lf%%\n", this->deck_row[vec[i].id].elo, now_score[id_to_idx[vec[i].id]], this->get_win_rate(vec[i].id));
 			if (i % 4 == 3)
 				printf("\n");
 		}
@@ -1701,7 +1701,7 @@ void GKD_ELO_Chart::print_calculating_score(int _mode) {
 	else {
 		for (i = 0; i < num_user; i++) {
 			this->print_id_name(vec[i].id, PRINT_ID_AFTER_COMMA | PRINT_AFTER_LENGTH_BLANK);
-			printf(" : %.2lf -> %.2lf\n", this->deck_row[vec[i].id].elo, now_score[i]);
+			printf(" : %.2lf -> %.2lf, %.2lf%%\n", this->deck_row[vec[i].id].elo, now_score[i], this->get_win_rate(vec[i].id));
 			if (i % 4 == 3)
 				printf("\n");
 		}
